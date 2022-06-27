@@ -4,17 +4,141 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/common_spacing"
     tools:context=".MainActivity">
 
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/barrier"
+        android:layout_marginBottom="@dimen/common_spacing"
+        tools:srcCompat="@drawable/post_avatar" />
+
     <TextView
+        android:id="@+id/authorTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size"
+        android:ellipsize="end"
+        android:singleLine="true"
+        app:layout_constraintBottom_toTopOf="@id/publishedTextView"
+        app:layout_constraintStart_toEndOf="@+id/avatar"
+        app:layout_constraintTop_toTopOf="@+id/avatar"
+        app:layout_constraintEnd_toStartOf="@id/dotsImageView"
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        android:layout_marginStart="@dimen/common_spacing"
+        android:layout_marginEnd="@dimen/common_spacing"
+        tools:text="@sample/posts.json/data/author" />
+
+    <TextView
+        android:id="@+id/publishedTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nmedia"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="@dimen/text_size"
+        app:layout_constraintBottom_toBottomOf="@+id/avatar"
+        app:layout_constraintStart_toStartOf="@+id/authorTextView"
+        app:layout_constraintTop_toBottomOf="@+id/authorTextView"
+        tools:text="@sample/posts.json/data/published" />
+
+    <ImageView
+        android:id="@+id/dotsImageView"
+        android:layout_width="@dimen/icons_size"
+        android:layout_height="@dimen/icons_size"
+        android:src="@drawable/ic_baseline_more_vert_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="avatar,dotsImageView,publishedTextView"
+        />
+
+    <TextView
+        android:id="@+id/contentTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size"
+        android:layout_marginTop="@dimen/common_spacing"
+        android:layout_marginBottom="@dimen/common_spacing"
+        app:layout_constraintBottom_toTopOf="@id/barrier2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier"
+        tools:text="@sample/posts.json/data/content" />
+    
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="contentTextView"
+        />
+    <ImageView
+        android:id="@+id/favImage"
+        android:layout_width="@dimen/icons_size"
+        android:layout_height="@dimen/icons_size"
+        android:src="@drawable/ic_baseline_favorite_border_24"
+        app:layout_constraintTop_toBottomOf="@id/barrier2"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/common_spacing"
+        />
+
+    <TextView
+        android:id="@+id/likesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/countOfLikes"
+        android:textSize="@dimen/text_size"
+        android:layout_marginStart="@dimen/common_spacing"
+        app:layout_constraintStart_toEndOf="@id/favImage"
+        app:layout_constraintTop_toTopOf="@+id/favImage" />
+
+    <ImageView
+        android:id="@+id/sharingImage"
+        android:layout_width="@dimen/icons_size"
+        android:layout_height="@dimen/icons_size"
+        android:layout_marginStart="@dimen/common_spacing"
+        android:src="@drawable/ic_baseline_share_24"
+        app:layout_constraintStart_toEndOf="@id/likesTextView"
+        app:layout_constraintTop_toTopOf="@+id/likesTextView" />
+
+    <TextView
+        android:id="@+id/sharesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/countOfShares"
+        android:textSize="@dimen/text_size"
+        android:layout_marginStart="@dimen/common_spacing"
+        app:layout_constraintStart_toEndOf="@id/sharingImage"
+        app:layout_constraintTop_toTopOf="@+id/favImage" />
+
+    <TextView
+        android:id="@+id/viewsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/countOfViews"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sharesTextView" />
+
+    <ImageView
+        android:id="@+id/eyeImage"
+        android:layout_width="@dimen/icons_size"
+        android:layout_height="@dimen/icons_size"
+        android:layout_marginEnd="@dimen/common_spacing"
+        android:src="@drawable/ic_baseline_remove_red_eye_24"
+        app:layout_constraintEnd_toStartOf="@id/viewsTextView"
+        app:layout_constraintTop_toTopOf="@id/viewsTextView" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
