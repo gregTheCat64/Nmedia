@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">Nmedia</string>
     <string name="nmedia">NMedia!</string>
-    <string name="countOfLikes">10</string>
-    <string name="countOfShares">5</string>
-    <string name="countOfViews">5</string>
+    <string name="countOfLikes" translatable="false">10</string>
+    <string name="countOfShares" translatable="false">5</string>
+    <string name="countOfViews" translatable="false">5</string>
+    <string name="dotsimage" translatable="false">dotsImage</string>
+    <string name="favicon" translatable="false">favIcon</string>
+    <string name="shareicon" translatable="false">shareIcon</string>
+    <string name="eyeicon" translatable="false">eyeIcon</string>
+    <string name="avatarimage" translatable="false">avatarImage</string>
 
 </resources>

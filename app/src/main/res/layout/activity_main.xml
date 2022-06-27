@@ -16,7 +16,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/barrier"
         android:layout_marginBottom="@dimen/common_spacing"
-        tools:srcCompat="@drawable/post_avatar" />
+        tools:srcCompat="@drawable/post_avatar"
+        android:contentDescription="@string/avatarimage" />
 
     <TextView
         android:id="@+id/authorTextView"
@@ -49,6 +50,7 @@
         android:layout_width="@dimen/icons_size"
         android:layout_height="@dimen/icons_size"
         android:src="@drawable/ic_baseline_more_vert_24"
+        android:contentDescription="@string/dotsimage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -87,6 +89,7 @@
         android:id="@+id/favImage"
         android:layout_width="@dimen/icons_size"
         android:layout_height="@dimen/icons_size"
+        android:contentDescription="@string/favicon"
         android:src="@drawable/ic_baseline_favorite_border_24"
         app:layout_constraintTop_toBottomOf="@id/barrier2"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,6 +110,7 @@
         android:id="@+id/sharingImage"
         android:layout_width="@dimen/icons_size"
         android:layout_height="@dimen/icons_size"
+        android:contentDescription="@string/shareicon"
         android:layout_marginStart="@dimen/common_spacing"
         android:src="@drawable/ic_baseline_share_24"
         app:layout_constraintStart_toEndOf="@id/likesTextView"
@@ -135,6 +139,7 @@
         android:id="@+id/eyeImage"
         android:layout_width="@dimen/icons_size"
         android:layout_height="@dimen/icons_size"
+        android:contentDescription="@string/eyeicon"
         android:layout_marginEnd="@dimen/common_spacing"
         android:src="@drawable/ic_baseline_remove_red_eye_24"
         app:layout_constraintEnd_toStartOf="@id/viewsTextView"
