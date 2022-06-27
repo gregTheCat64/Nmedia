@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/barrier"
         android:layout_marginBottom="@dimen/common_spacing"
-        tools:srcCompat="@drawable/post_avatar"
+        tools:srcCompat="@sample/posts.json/data/authorAvatar"
         android:contentDescription="@string/avatarimage" />
 
     <TextView
