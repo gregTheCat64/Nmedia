@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
             publishedTextView.setText(post.published)
             likesTextView.setText(countFormat(post.countOfLikes))
             sharesTextView.setText(countFormat(post.shared))
+
             if (post.liked) {
                 favImage.setImageResource(R.drawable.ic_liked_24)
             }
