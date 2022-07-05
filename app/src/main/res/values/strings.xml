@@ -9,5 +9,9 @@
     <string name="shareicon" translatable="false">shareIcon</string>
     <string name="eyeicon" translatable="false">eyeIcon</string>
     <string name="avatarimage" translatable="false">avatarImage</string>
+    <string name="description_post_author_avatar" translatable="false">Post author avatar</string>
+    <string name="description_post_menu" translatable="false">Post menu</string>
+    <string name="description_post_like" translatable="false">Like</string>
+    <string name="description_post_share" translatable="false">Share</string>
 
 </resources>
