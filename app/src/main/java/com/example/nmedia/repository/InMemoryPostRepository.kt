@@ -14,7 +14,7 @@ class InMemoryPostRepository : PostRepository {
             published = "23 сентября в 10:12",
             likedByMe = false,
             countOfLikes = 999,
-            countOfShares =99_999
+            countOfShares = 99_999
         ),
         Post(
             id = 8,
@@ -22,7 +22,7 @@ class InMemoryPostRepository : PostRepository {
             content = "Делиться впечатлениями о любимых фильмах легко, а что если рассказать так, чтобы все заскучали \uD83D\uDE34\n",
             published = "22 сентября в 10:14",
             likedByMe = false,
-                    countOfLikes = 0,
+            countOfLikes = 0,
             countOfShares = 0
         ),
         Post(
@@ -96,8 +96,11 @@ class InMemoryPostRepository : PostRepository {
 
     override fun likeById(id: Long) {
         posts = posts.map {
-            if (it.id != id) it else if (it.likedByMe) {it.copy(likedByMe = !it.likedByMe, countOfLikes = it.countOfLikes-1)}
-            else {it.copy(likedByMe = !it.likedByMe, countOfLikes = it.countOfLikes +1)}
+            if (it.id != id) it else if (it.likedByMe) {
+                it.copy(likedByMe = !it.likedByMe, countOfLikes = it.countOfLikes - 1)
+            } else {
+                it.copy(likedByMe = !it.likedByMe, countOfLikes = it.countOfLikes + 1)
+            }
 
         }
         data.value = posts
@@ -105,7 +108,7 @@ class InMemoryPostRepository : PostRepository {
 
     override fun shareById(id: Long) {
         posts = posts.map {
-            if (it.id != id) it else it.copy(countOfShares = it.countOfShares+1)
+            if (it.id != id) it else it.copy(countOfShares = it.countOfShares + 1)
         }
         data.value = posts
     }
