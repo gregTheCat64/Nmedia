@@ -13,8 +13,8 @@ class InMemoryPostRepository : PostRepository {
             content = "Освоение новой профессии — это не только открывающиеся возможности и перспективы, но и настоящий вызов самому себе. Приходится выходить из зоны комфорта и перестраивать привычный образ жизни: менять распорядок дня, искать время для занятий, быть готовым к возможным неудачам в начале пути. В блоге рассказали, как избежать стресса на курсах профпереподготовки → http://netolo.gy/fPD",
             published = "23 сентября в 10:12",
             likedByMe = false,
-            countOfLikes = 0,
-            countOfShares =0
+            countOfLikes = 999,
+            countOfShares =99_999
         ),
         Post(
             id = 8,
@@ -96,8 +96,8 @@ class InMemoryPostRepository : PostRepository {
 
     override fun likeById(id: Long) {
         posts = posts.map {
-            if (it.id != id) it else it.copy(likedByMe = !it.likedByMe, countOfLikes = +1)
-
+            if (it.id != id) it else if (it.likedByMe) {it.copy(likedByMe = !it.likedByMe, countOfLikes = it.countOfLikes-1)}
+            else {it.copy(likedByMe = !it.likedByMe, countOfLikes = it.countOfLikes +1)}
 
         }
         data.value = posts
@@ -105,21 +105,9 @@ class InMemoryPostRepository : PostRepository {
 
     override fun shareById(id: Long) {
         posts = posts.map {
-            if (it.id != id) it else it.copy(countOfShares = +1)
+            if (it.id != id) it else it.copy(countOfShares = it.countOfShares+1)
         }
-
+        data.value = posts
     }
-    //        (
-//            liked = !post.liked,
-//            countOfLikes = if (post.liked) post.countOfLikes-1 else post.countOfLikes+1
-//        )
-//        data.value = post
-//    }
 
-//    override fun share() {
-//        post = post.copy(
-//            countOfShares = post.countOfShares+1
-//        )
-//        data.value = post
-//    }
 }
