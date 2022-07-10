@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.nmedia.dto.Post
 
 class InMemoryPostRepository : PostRepository {
+
     private var posts = listOf(
         Post(
             id = 9,
@@ -113,4 +114,23 @@ class InMemoryPostRepository : PostRepository {
         data.value = posts
     }
 
+    override fun removeById(id: Long) {
+        posts = posts.filter { it.id != id }
+        data.value = posts
+    }
+
+    override fun save(post: Post) {
+        data.value = if (post.id == 0L){
+            listOf(post.copy(
+                id = posts.firstOrNull()?.id ?:1L
+            )) + posts
+
+        }else {
+            posts.map {
+                if (it.id == post.id) it.copy(content = post.content) else it
+            }
+        }
+
+
+    }
 }
