@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.example.nmedia.adapter.PostAdapter
 import com.example.nmedia.adapter.PostEventListener
 import com.example.nmedia.databinding.ActivityMainBinding
@@ -40,12 +41,16 @@ class MainActivity : AppCompatActivity() {
         )
 
         viewModel.edited.observe(this) { edited ->
-            if (edited.id == 0L) {
-                    return@observe
+//            if (!edited.content.isNullOrBlank()){
+//                binding.editCancelGroup.visibility = View.VISIBLE
+//            } else binding.editCancelGroup.visibility = View.GONE
+//            if (edited.id == 0L) {
+//                    return@observe
+//            }
+            binding.editCancelGroup.isVisible = edited.id != 0L
+            if(edited.id ==0L) {
+                return@observe
             }
-            if (!edited.content.isNullOrBlank()){
-                binding.editCancelGroup.visibility = View.VISIBLE
-            } else binding.editCancelGroup.visibility = View.GONE
 
             binding.content.setText(edited.content)
             binding.content.requestFocus()
@@ -61,7 +66,6 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val text = binding.content.text.toString()
-
 
             viewModel.editContent(text)
             viewModel.save()
