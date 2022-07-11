@@ -43,4 +43,8 @@ class PostViewModel: ViewModel() {
             edited.value = it.copy(content = trimmed)
         }
     }
+
+    fun cancelEditing(){
+        edited.value = empty
+    }
 }

@@ -41,23 +41,24 @@ class MainActivity : AppCompatActivity() {
         )
 
         viewModel.edited.observe(this) { edited ->
-//            if (!edited.content.isNullOrBlank()){
-//                binding.editCancelGroup.visibility = View.VISIBLE
-//            } else binding.editCancelGroup.visibility = View.GONE
-//            if (edited.id == 0L) {
-//                    return@observe
-//            }
             binding.editCancelGroup.isVisible = edited.id != 0L
+
             if(edited.id ==0L) {
                 return@observe
             }
 
             binding.content.setText(edited.content)
             binding.content.requestFocus()
+        }
+
+        binding.cancelButton.setOnClickListener {
+            //Toast.makeText(this, "нажато", Toast.LENGTH_SHORT).show()
+            viewModel.cancelEditing()
+            binding.content.setText("")
+            binding.content.clearFocus()
 
         }
 
-        //    binding.content.setOnFocusChangeListener { v, hasFocus -> binding.editCancelGroup.visibility = View.VISIBLE }
 
 
         binding.save.setOnClickListener {
@@ -79,6 +80,8 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(posts)
 
         }
+
+        
     }
 
 }
