@@ -43,12 +43,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.edited.observe(this) { edited ->
             binding.editCancelGroup.isVisible = edited.id != 0L
 
-            if(edited.id ==0L) {
-                return@observe
+            if(edited.id !=0L) {
+                binding.content.setText(edited.content)
+                binding.content.requestFocus()
             }
 
-            binding.content.setText(edited.content)
-            binding.content.requestFocus()
+
         }
 
         binding.cancelButton.setOnClickListener {
