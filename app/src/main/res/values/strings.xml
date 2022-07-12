@@ -16,5 +16,8 @@
     <string name="post_menu_remove">Remove</string>
     <string name="post_input_text">Post text</string>
     <string name="post_menu_edit">Edit</string>
+    <string name="Me">Me</string>
+    <string name="now">now</string>
+    <string name="PostIsBlank">Post is blank</string>
 
 </resources>

@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.save.setOnClickListener {
             if (binding.content.text.isNullOrBlank()) {
-                Toast.makeText(it.context, "Post is blank", Toast.LENGTH_SHORT).show()
+                Toast.makeText(it.context, getString(R.string.PostIsBlank), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             val text = binding.content.text.toString()
@@ -78,7 +78,6 @@ class MainActivity : AppCompatActivity() {
         binding.list.adapter = adapter
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
-
         }
 
         
