@@ -42,21 +42,17 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.edited.observe(this) { edited ->
             binding.editCancelGroup.isVisible = edited.id != 0L
-
             if(edited.id !=0L) {
                 binding.content.setText(edited.content)
                 binding.content.requestFocus()
             }
-
-
         }
 
         binding.cancelButton.setOnClickListener {
-            //Toast.makeText(this, "нажато", Toast.LENGTH_SHORT).show()
             viewModel.cancelEditing()
             binding.content.setText("")
+            AndroidUtils.hideKeyboard(binding.content)
             binding.content.clearFocus()
-
         }
 
 
@@ -67,20 +63,17 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val text = binding.content.text.toString()
-
             viewModel.editContent(text)
             viewModel.save()
-
             binding.content.clearFocus()
             AndroidUtils.hideKeyboard(binding.content)
             binding.content.setText("")
         }
+
         binding.list.adapter = adapter
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
         }
-
-        
     }
 
 }

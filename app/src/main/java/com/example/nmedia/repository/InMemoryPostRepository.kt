@@ -127,7 +127,7 @@ class InMemoryPostRepository : PostRepository {
             posts = listOf(
                 post.copy(
                     id = nextId++,
-                    author = "Me",
+                    author = "Григорий Кот",
                     likedByMe = false,
                     published = "now"
                 )
