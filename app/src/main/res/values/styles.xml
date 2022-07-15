@@ -8,7 +8,7 @@
         <item name="android:minHeight">@dimen/icon_button_min_size</item>
         <item name="strokeColor">@color/white</item>
         <item name="android:backgroundTint">@color/light_grey</item>
-
+        <item name="cornerRadius">65dp</item>
         <item name="rippleColor">@color/red</item>
     </style>
 
@@ -19,6 +19,7 @@
         <item name="android:backgroundTint">@color/light_grey</item>
         <item name="strokeColor">@color/white</item>
         <item name="rippleColor">@color/grey</item>
+        <item name="cornerRadius">65dp</item>
     </style>
 
     <style name="Widget.AppTheme.ImageView" parent="Widget.AppCompat.ImageButton">
