@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onRemove(post: Post) {
                     viewModel.removeById(post.id)
+                    binding.list.smoothScrollToPosition(0)
                 }
 
                 override fun onLike(post: Post) {
@@ -72,7 +73,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.list.adapter = adapter
         viewModel.data.observe(this) { posts ->
-            adapter.submitList(posts)
+            val newPost = posts.size>adapter.currentList.size
+            adapter.submitList(posts){
+                if(newPost) binding.list.smoothScrollToPosition(0)
+            }
         }
     }
 
