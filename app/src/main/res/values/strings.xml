@@ -19,5 +19,6 @@
     <string name="Me">Me</string>
     <string name="now">now</string>
     <string name="PostIsBlank">Post is blank</string>
+    <string name="chooser_share_post" translatable="false">Share</string>
 
 </resources>
