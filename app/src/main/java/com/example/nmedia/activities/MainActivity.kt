@@ -27,12 +27,18 @@ class MainActivity : AppCompatActivity() {
             viewModel.editContent(text.toString())
             viewModel.save()
         }
+        val editPostLauncher = registerForActivityResult(EditPostActivityContract()){text->
+            text?: return@registerForActivityResult
+            viewModel.editContent(text.toString())
+            viewModel.save()
+        }
 
 
         val adapter = PostAdapter(
             object : PostEventListener {
                 override fun onEdit(post: Post) {
                     viewModel.edit(post)
+                    editPostLauncher.launch(post.content)
                 }
 
                 override fun onRemove(post: Post) {

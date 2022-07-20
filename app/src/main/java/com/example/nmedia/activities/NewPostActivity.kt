@@ -14,7 +14,16 @@ class NewPostActivity : AppCompatActivity() {
         val binding = ActivityNewPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        intent?.let {
+            val text = it.getStringExtra(Intent.EXTRA_TEXT)
+            if (text.isNullOrBlank()) {
+                Toast.makeText(this, "Пустой пост", Toast.LENGTH_SHORT).show()
+            } else binding.content.setText(text.toString())
+        }
+
+
         binding.save.setOnClickListener {
+
             if (binding.content.text.isNullOrBlank()) {
                 Toast.makeText(it.context, getString(R.string.PostIsBlank), Toast.LENGTH_SHORT)
                     .show()

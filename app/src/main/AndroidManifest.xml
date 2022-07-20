@@ -11,7 +11,14 @@
         android:theme="@style/Theme.Nmedia">
         <activity
             android:name=".activities.NewPostActivity"
-            android:exported="false" />
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".IntentHandlerActivity"
             android:exported="false">
