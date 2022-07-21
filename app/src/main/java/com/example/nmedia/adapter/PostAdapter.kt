@@ -1,12 +1,18 @@
 package com.example.nmedia.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nmedia.R
+import com.example.nmedia.activities.MainActivity
 import com.example.nmedia.databinding.CardPostBinding
 import com.example.nmedia.dto.Post
 
@@ -15,6 +21,7 @@ interface PostEventListener{
     fun onRemove(post: Post)
     fun onLike(post: Post)
     fun onShare(post: Post)
+    fun onPlay(post: Post)
 }
 //typealias  OnLikeListener = (post: Post) -> Unit
 //typealias  OnShareListener = (post: Post) -> Unit
@@ -54,6 +61,9 @@ class PostViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
         binding.apply {
+            if (!post.videoLink.isNullOrBlank()) {videoGroup.visibility = View.VISIBLE
+            }
+
             author.text = post.author
             content.text = post.content
             published.text = post.published
@@ -68,6 +78,11 @@ class PostViewHolder(
             share.setOnClickListener {
                 listener.onShare(post)
             }
+
+            playBtn.setOnClickListener{
+               listener.onPlay(post)
+            }
+
             menu.setOnClickListener { it ->
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.post_menu)

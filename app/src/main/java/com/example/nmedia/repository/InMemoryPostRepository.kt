@@ -17,7 +17,8 @@ class InMemoryPostRepository : PostRepository {
             published = "23 сентября в 10:12",
             likedByMe = false,
             countOfLikes = 999,
-            countOfShares = 99_999
+            countOfShares = 99_999,
+            videoLink = null
         ),
         Post(
             id = nextId++,
@@ -26,7 +27,8 @@ class InMemoryPostRepository : PostRepository {
             published = "22 сентября в 10:14",
             likedByMe = false,
             countOfLikes = 0,
-            countOfShares = 0
+            countOfShares = 0,
+            videoLink = null
         ),
         Post(
             id = nextId++,
@@ -35,7 +37,8 @@ class InMemoryPostRepository : PostRepository {
             published = "22 сентября в 10:12",
             likedByMe = false,
             countOfLikes = 0,
-            countOfShares = 0
+            countOfShares = 0,
+            videoLink = null
         ),
         Post(
             id = nextId++,
@@ -44,7 +47,8 @@ class InMemoryPostRepository : PostRepository {
             published = "21 сентября в 10:12",
             likedByMe = false,
             countOfLikes = 0,
-            countOfShares = 0
+            countOfShares = 0,
+            videoLink = null
         ),
         Post(
             id = nextId++,
@@ -53,7 +57,8 @@ class InMemoryPostRepository : PostRepository {
             published = "20 сентября в 10:14",
             likedByMe = false,
             countOfLikes = 0,
-            countOfShares = 0
+            countOfShares = 0,
+            videoLink = null
         ),
         Post(
             id = nextId++,
@@ -62,7 +67,8 @@ class InMemoryPostRepository : PostRepository {
             published = "19 сентября в 14:12",
             likedByMe = false,
             countOfLikes = 0,
-            countOfShares = 0
+            countOfShares = 0,
+            videoLink = null
         ),
         Post(
             id = nextId++,
@@ -71,7 +77,8 @@ class InMemoryPostRepository : PostRepository {
             published = "19 сентября в 10:24",
             likedByMe = false,
             countOfLikes = 0,
-            countOfShares = 0
+            countOfShares = 0,
+            videoLink = null
         ),
         Post(
             id = nextId++,
@@ -80,7 +87,8 @@ class InMemoryPostRepository : PostRepository {
             published = "18 сентября в 10:12",
             likedByMe = false,
             countOfLikes = 0,
-            countOfShares = 0
+            countOfShares = 0,
+            videoLink = null
         ),
         Post(
             id = nextId++,
@@ -89,7 +97,8 @@ class InMemoryPostRepository : PostRepository {
             published = "21 мая в 18:36",
             likedByMe = false,
             countOfLikes = 0,
-            countOfShares = 0
+            countOfShares = 0,
+            videoLink = null
         ),
 
         )

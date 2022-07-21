@@ -2,6 +2,7 @@ package com.example.nmedia.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.nmedia.dto.ContentData
 import com.example.nmedia.dto.Post
 import com.example.nmedia.repository.InMemoryPostRepository
 import com.example.nmedia.repository.PostRepository
@@ -13,38 +14,45 @@ val empty = Post(
     "",
     false,
     0,
-    0
+    0,
+    ""
 )
-class PostViewModel: ViewModel() {
+
+class PostViewModel : ViewModel() {
     private val repository: PostRepository = InMemoryPostRepository()
     val data = repository.getAll()
     fun likeById(id: Long) = repository.likeById(id)
-    fun sharedById(id:Long) = repository.shareById(id)
+    fun sharedById(id: Long) = repository.shareById(id)
     fun removeById(id: Long) = repository.removeById(id)
 
-    val edited = MutableLiveData(empty)
+    private val edited = MutableLiveData(empty)
 
-    fun save(){
+    fun save() {
         edited.value?.let {
             repository.save(it)
             edited.value = empty
         }
     }
 
-    fun edit(post: Post){
+    fun edit(post: Post) {
         edited.value = post
     }
-    fun editContent(content: String){
+
+    fun editContent(contentData: ContentData) {
         edited.value?.let {
-            val trimmed = content.trim()
-            if (trimmed == it.content){
+            val trimmed = contentData.textContent.trim()
+            if (trimmed == it.content) {
                 return
             }
-            edited.value = it.copy(content = trimmed)
+
+            if (!contentData.videoContent.isNullOrEmpty()) {
+                edited.value = it.copy(content = trimmed, videoLink = contentData.videoContent)
+            } else edited.value = it.copy(content = trimmed)
         }
+
     }
 
-    fun cancelEditing(){
+    fun cancelEditing() {
         edited.value = empty
     }
 }

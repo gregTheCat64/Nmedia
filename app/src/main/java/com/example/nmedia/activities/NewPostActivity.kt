@@ -17,24 +17,36 @@ class NewPostActivity : AppCompatActivity() {
         intent?.let {
             val text = it.getStringExtra(Intent.EXTRA_TEXT)
             if (text.isNullOrBlank()) {
-                Toast.makeText(this, "Пустой пост", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Новый пост", Toast.LENGTH_SHORT).show()
             } else binding.content.setText(text.toString())
         }
 
 
-        binding.save.setOnClickListener {
-
-            if (binding.content.text.isNullOrBlank()) {
+        binding.save.setOnClickListener { it ->
+            var result: Intent = Intent()
+//            result?.let {
+//                if (binding.videoLink.text.isNotBlank()) {
+//                    it.putExtra("VIDEOLINK", binding.videoLink.text.toString())
+//                }
+//                if (binding.content.text.isNotBlank()) {
+//                    it.putExtra("CONTENT", binding.content.text.toString())
+//                }
+//                setResult(RESULT_OK, result)
+//            }
+            if (binding.videoLink.text.isNotBlank()) {
+                    result.putExtra("VIDEOLINK", binding.videoLink.text.toString())
+                }
+            if (binding.content.text.isNotBlank()) {
+                result.putExtra("CONTENT", binding.content.text.toString())
+                setResult(RESULT_OK, result)
+            } else{
                 Toast.makeText(it.context, getString(R.string.PostIsBlank), Toast.LENGTH_SHORT)
                     .show()
                 setResult(RESULT_CANCELED)
-            } else {
-                val result = Intent().putExtra(Intent.EXTRA_TEXT, binding.content.text.toString())
-                setResult(RESULT_OK, result)
             }
+
             finish()
-
-
         }
+
     }
 }

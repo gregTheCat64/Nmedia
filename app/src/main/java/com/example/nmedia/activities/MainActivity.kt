@@ -1,6 +1,7 @@
 package com.example.nmedia.activities
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -22,14 +23,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         val viewModel: PostViewModel by viewModels()
 
-       val newPostLauncher =  registerForActivityResult(NewPostActivityContract()){ text->
-            text?: return@registerForActivityResult
-            viewModel.editContent(text.toString())
+       val newPostLauncher =  registerForActivityResult(NewPostActivityContract()){ result->
+            result?: return@registerForActivityResult
+      //     Toast.makeText(this, "${result.textContent} and ${result.videoContent}", Toast.LENGTH_SHORT).show()
+            viewModel.editContent(result)
             viewModel.save()
         }
-        val editPostLauncher = registerForActivityResult(EditPostActivityContract()){text->
-            text?: return@registerForActivityResult
-            viewModel.editContent(text.toString())
+        val editPostLauncher = registerForActivityResult(EditPostActivityContract()){result->
+            result?: return@registerForActivityResult
+            viewModel.editContent(result)
             viewModel.save()
         }
 
@@ -60,6 +62,15 @@ class MainActivity : AppCompatActivity() {
                     val shareIntent = Intent.createChooser(intent, getString(R.string.chooser_share_post))
                     startActivity(shareIntent)
                 }
+
+                override fun onPlay(post: Post) {
+           //         Toast.makeText(applicationContext, "playTheVideo", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=mh-7jvePXF4&t=1405s"))
+                    if (intent.resolveActivity(packageManager) != null){
+                        startActivity(intent)
+                    }
+
+                }
             }
         )
 
@@ -75,6 +86,8 @@ class MainActivity : AppCompatActivity() {
         binding.create.setOnClickListener {
             newPostLauncher.launch()
         }
+
+
     }
 
 }
