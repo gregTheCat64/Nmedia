@@ -12,7 +12,7 @@ class NewPostActivityContract: ActivityResultContract<Unit, ContentData?>() {
     override fun parseResult(resultCode: Int, intent: Intent?): ContentData? {
         val videoLink = intent?.getStringExtra("VIDEOLINK")
         val text = intent?.getStringExtra("CONTENT")
-        return ContentData(text.toString(),videoLink.toString() )
+        return ContentData(text.toString(),videoLink)
     }
 
     }

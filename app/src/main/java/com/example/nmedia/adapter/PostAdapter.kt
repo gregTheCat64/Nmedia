@@ -61,9 +61,7 @@ class PostViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
         binding.apply {
-            if (!post.videoLink.isNullOrBlank()) {videoGroup.visibility = View.VISIBLE
-            }
-
+            videoGroup.isVisible = !post.videoLink.isNullOrBlank()
             author.text = post.author
             content.text = post.content
             published.text = post.published

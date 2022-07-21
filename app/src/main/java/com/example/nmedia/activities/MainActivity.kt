@@ -1,5 +1,6 @@
 package com.example.nmedia.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -63,13 +64,13 @@ class MainActivity : AppCompatActivity() {
                     startActivity(shareIntent)
                 }
 
+                @SuppressLint("QueryPermissionsNeeded")
                 override fun onPlay(post: Post) {
-           //         Toast.makeText(applicationContext, "playTheVideo", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=mh-7jvePXF4&t=1405s"))
+                   Toast.makeText(applicationContext, post.videoLink.toString(), Toast.LENGTH_SHORT).show()
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink))
                     if (intent.resolveActivity(packageManager) != null){
                         startActivity(intent)
                     }
-
                 }
             }
         )
@@ -86,8 +87,6 @@ class MainActivity : AppCompatActivity() {
         binding.create.setOnClickListener {
             newPostLauncher.launch()
         }
-
-
     }
 
 }

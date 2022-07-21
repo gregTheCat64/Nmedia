@@ -1,9 +1,7 @@
 package com.example.nmedia.repository
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.nmedia.R
 import com.example.nmedia.dto.Post
 
 class InMemoryPostRepository : PostRepository {

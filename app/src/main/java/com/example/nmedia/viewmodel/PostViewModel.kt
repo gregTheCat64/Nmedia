@@ -40,14 +40,15 @@ class PostViewModel : ViewModel() {
 
     fun editContent(contentData: ContentData) {
         edited.value?.let {
-            val trimmed = contentData.textContent.trim()
-            if (trimmed == it.content) {
-                return
-            }
-
-            if (!contentData.videoContent.isNullOrEmpty()) {
-                edited.value = it.copy(content = trimmed, videoLink = contentData.videoContent)
-            } else edited.value = it.copy(content = trimmed)
+//            val trimmed = contentData.textContent.trim()
+//            if (trimmed == it.content) {
+//                return
+//            }
+            edited.value = it.copy(content = contentData.textContent, videoLink = contentData.videoContent)
+//            if (!contentData.videoContent.isNullOrBlank() && !contentData.textContent.isNullOrBlank()) {
+//                edited.value = it.copy(content = trimmed, videoLink = contentData.videoContent)
+//            } else if (!contentData.textContent.isNullOrBlank()) edited.value = it.copy(content = trimmed)
+//            else  edited.value = it.copy(videoLink = contentData.videoContent)
         }
 
     }

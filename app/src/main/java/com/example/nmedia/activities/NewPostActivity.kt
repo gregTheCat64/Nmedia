@@ -33,10 +33,10 @@ class NewPostActivity : AppCompatActivity() {
 //                }
 //                setResult(RESULT_OK, result)
 //            }
-            if (binding.videoLink.text.isNotBlank()) {
+            if (binding.videoLink.text.isNotEmpty()) {
                     result.putExtra("VIDEOLINK", binding.videoLink.text.toString())
                 }
-            if (binding.content.text.isNotBlank()) {
+            if (binding.content.text.isNotEmpty()) {
                 result.putExtra("CONTENT", binding.content.text.toString())
                 setResult(RESULT_OK, result)
             } else{
