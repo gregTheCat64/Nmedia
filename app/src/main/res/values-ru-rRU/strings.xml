@@ -8,4 +8,5 @@
     <string name="Me">Я</string>
     <string name="now">сейчас</string>
     <string name="PostIsBlank">Пост пустой</string>
+    <string name="input_video_link_here">Место для вставки ссылки на видео</string>
 </resources>
