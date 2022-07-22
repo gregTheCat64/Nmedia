@@ -43,20 +43,10 @@ class PostViewModel : ViewModel() {
         if (edited.value?.content == text) {
             return
         }
-        if (!contentData.textContent.isNullOrBlank() && !contentData.videoContent.isNullOrBlank()){
-            edited.value = edited.value?.copy(
+        edited.value = edited.value?.copy(
                 content = contentData.textContent,
-                videoLink = contentData.videoContent
-            )
-        } else if (!contentData.textContent.isNullOrBlank()){
-            edited.value = edited.value?.copy(
-                content = contentData.textContent
-            )
-        } else if(!contentData.videoContent.isNullOrBlank()){
-            edited.value = edited.value?.copy(
-                content = contentData.videoContent
-            )
-        }
+                videoLink = contentData.videoContent)
+
 
     }
 
