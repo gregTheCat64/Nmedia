@@ -30,26 +30,34 @@ class PostViewModel : ViewModel() {
     fun save() {
         edited.value?.let {
             repository.save(it)
-            edited.value = empty
         }
+        edited.value = empty
     }
 
     fun edit(post: Post) {
         edited.value = post
     }
 
-    fun editContent(contentData: ContentData) {
+    fun changeContent(contentData: ContentData) {
         val text = contentData.textContent?.trim()
         if (edited.value?.content == text) {
             return
         }
-        if (contentData.textContent.isNullOrEmpty() && contentData.videoContent.isNullOrEmpty()) {
-            return
+        if (!contentData.textContent.isNullOrBlank() && !contentData.videoContent.isNullOrBlank()){
+            edited.value = edited.value?.copy(
+                content = contentData.textContent,
+                videoLink = contentData.videoContent
+            )
+        } else if (!contentData.textContent.isNullOrBlank()){
+            edited.value = edited.value?.copy(
+                content = contentData.textContent
+            )
+        } else if(!contentData.videoContent.isNullOrBlank()){
+            edited.value = edited.value?.copy(
+                content = contentData.videoContent
+            )
         }
-        edited.value = edited.value?.copy(
-            content = contentData.textContent,
-            videoLink = contentData.videoContent
-        )
+
     }
 
 }

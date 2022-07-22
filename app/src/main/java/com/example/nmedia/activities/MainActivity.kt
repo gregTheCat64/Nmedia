@@ -8,13 +8,11 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.launch
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
 import com.example.nmedia.R
 import com.example.nmedia.adapter.PostAdapter
 import com.example.nmedia.adapter.PostEventListener
 import com.example.nmedia.databinding.ActivityMainBinding
 import com.example.nmedia.dto.Post
-import com.example.nmedia.util.AndroidUtils
 import com.example.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -27,12 +25,12 @@ class MainActivity : AppCompatActivity() {
        val newPostLauncher =  registerForActivityResult(NewPostActivityContract()){ result->
             result?: return@registerForActivityResult
       //     Toast.makeText(this, "${result.textContent} and ${result.videoContent}", Toast.LENGTH_SHORT).show()
-            viewModel.editContent(result)
+            viewModel.changeContent(result)
             viewModel.save()
         }
         val editPostLauncher = registerForActivityResult(EditPostActivityContract()){result->
             result?: return@registerForActivityResult
-            viewModel.editContent(result)
+            viewModel.changeContent(result)
             viewModel.save()
         }
 
