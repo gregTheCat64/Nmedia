@@ -25,7 +25,7 @@ class NewPostActivity : AppCompatActivity() {
         binding.save.setOnClickListener { it ->
             var result: Intent = Intent()
             result.run {
-                if(binding.videoLink.text.isNullOrBlank() && binding.content.text.isNullOrBlank()){
+                if (binding.videoLink.text.isNullOrBlank() && binding.content.text.isNullOrBlank()) {
                     Toast.makeText(it.context, getString(R.string.PostIsBlank), Toast.LENGTH_SHORT)
                         .show()
                     setResult(RESULT_CANCELED)
@@ -42,11 +42,10 @@ class NewPostActivity : AppCompatActivity() {
             }
 
 
-
         }
 
-
-        }
 
     }
+
+}
 

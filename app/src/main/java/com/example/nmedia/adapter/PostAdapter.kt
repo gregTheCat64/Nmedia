@@ -63,7 +63,7 @@ class PostViewHolder(
         binding.apply {
             videoGroup.isVisible = !post.videoLink.isNullOrBlank()
             author.text = post.author
-            content.text = post.content
+            if (!post.content.isNullOrEmpty()) content.text = post.content else content.text = ""
             published.text = post.published
             like.text = countFormat(post.countOfLikes)
             share.text = countFormat(post.countOfShares)

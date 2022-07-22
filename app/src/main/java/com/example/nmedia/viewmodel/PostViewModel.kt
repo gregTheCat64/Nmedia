@@ -46,8 +46,6 @@ class PostViewModel : ViewModel() {
         edited.value = edited.value?.copy(
                 content = contentData.textContent,
                 videoLink = contentData.videoContent)
-
-
     }
 
 }
