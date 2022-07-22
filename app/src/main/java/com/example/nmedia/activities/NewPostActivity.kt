@@ -24,29 +24,29 @@ class NewPostActivity : AppCompatActivity() {
 
         binding.save.setOnClickListener { it ->
             var result: Intent = Intent()
-//            result?.let {
-//                if (binding.videoLink.text.isNotBlank()) {
-//                    it.putExtra("VIDEOLINK", binding.videoLink.text.toString())
-//                }
-//                if (binding.content.text.isNotBlank()) {
-//                    it.putExtra("CONTENT", binding.content.text.toString())
-//                }
-//                setResult(RESULT_OK, result)
-//            }
-            if (binding.videoLink.text.isNotEmpty()) {
-                    result.putExtra("VIDEOLINK", binding.videoLink.text.toString())
+            result.run {
+                if(binding.videoLink.text.isNullOrBlank() && binding.content.text.isNullOrBlank()){
+                    Toast.makeText(it.context, getString(R.string.PostIsBlank), Toast.LENGTH_SHORT)
+                        .show()
+                    setResult(RESULT_CANCELED)
+                    finish()
                 }
-            if (binding.content.text.isNotEmpty()) {
-                result.putExtra("CONTENT", binding.content.text.toString())
+                if (binding.videoLink.text.isNotBlank()) {
+                    this.putExtra("VIDEOLINK", binding.videoLink.text.toString())
+                }
+                if (binding.content.text.isNotBlank()) {
+                    this.putExtra("CONTENT", binding.content.text.toString())
+                }
                 setResult(RESULT_OK, result)
-            } else{
-                Toast.makeText(it.context, getString(R.string.PostIsBlank), Toast.LENGTH_SHORT)
-                    .show()
-                setResult(RESULT_CANCELED)
+                finish()
             }
 
-            finish()
+
+
+        }
+
+
         }
 
     }
-}
+
