@@ -39,21 +39,21 @@ class PostViewModel : ViewModel() {
     }
 
     fun editContent(contentData: ContentData) {
-        edited.value?.let {
-            val trimmed = contentData.textContent?.trim()
-            if (trimmed == it.content) {
-                return
-            }
- //           edited.value = it.copy(content = contentData.textContent, videoLink = contentData.videoContent)
-            if (!contentData.videoContent.isNullOrBlank() && !contentData.textContent.isNullOrBlank()) {
-                edited.value = it.copy(content = trimmed, videoLink = contentData.videoContent)
-            } else if (!contentData.textContent.isNullOrBlank()) edited.value = it.copy(content = trimmed)
-            else  edited.value = it.copy(videoLink = contentData.videoContent)
+        val text = contentData.textContent?.trim()
+        if (edited.value?.content == text) {
+            return
         }
-
+        if (contentData.textContent.isNullOrEmpty() && contentData.videoContent.isNullOrEmpty()) {
+            return
+        }
+        edited.value = edited.value?.copy(
+            content = contentData.textContent,
+            videoLink = contentData.videoContent
+        )
     }
 
-    fun cancelEditing() {
-        edited.value = empty
-    }
 }
+
+//fun cancelEditing() {
+//    edited.value = empty
+//}
