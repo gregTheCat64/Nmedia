@@ -24,9 +24,11 @@ class MainActivity : AppCompatActivity() {
 
        val newPostLauncher =  registerForActivityResult(NewPostActivityContract()){ result->
             result?: return@registerForActivityResult
-      //     Toast.makeText(this, "${result.textContent} and ${result.videoContent}", Toast.LENGTH_SHORT).show()
-            viewModel.changeContent(result)
-            viewModel.save()
+           if (result.textContent != null  || result.videoContent!= null){
+               viewModel.changeContent(result)
+               viewModel.save()
+           }
+
         }
         val editPostLauncher = registerForActivityResult(EditPostActivityContract()){result->
             result?: return@registerForActivityResult
