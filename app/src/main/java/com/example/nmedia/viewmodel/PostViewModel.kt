@@ -1,11 +1,15 @@
 package com.example.nmedia.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.nmedia.dto.ContentData
 import com.example.nmedia.dto.Post
 import com.example.nmedia.repository.InMemoryPostRepository
 import com.example.nmedia.repository.PostRepository
+import com.example.nmedia.repository.PostRepositoryFileImpl
+import com.example.nmedia.repository.PostRepositorySharedPrefsImpl
 
 val empty = Post(
     0,
@@ -18,8 +22,8 @@ val empty = Post(
     null
 )
 
-class PostViewModel : ViewModel() {
-    private val repository: PostRepository = InMemoryPostRepository()
+class PostViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository: PostRepository = PostRepositoryFileImpl(application)
     val data = repository.getAll()
     fun likeById(id: Long) = repository.likeById(id)
     fun sharedById(id: Long) = repository.shareById(id)
@@ -40,7 +44,8 @@ class PostViewModel : ViewModel() {
 
     fun changeContent(contentData: ContentData) {
         val text = contentData.textContent?.trim()
-        if (edited.value?.content == text) {
+        val videoLink = contentData.videoContent?.trim()
+        if (edited.value?.content == text && edited.value?.videoLink ==videoLink) {
             return
         }
         edited.value = edited.value?.copy(

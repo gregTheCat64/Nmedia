@@ -1,6 +1,7 @@
 package com.example.nmedia.activities
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -14,12 +15,16 @@ import com.example.nmedia.adapter.PostEventListener
 import com.example.nmedia.databinding.ActivityMainBinding
 import com.example.nmedia.dto.Post
 import com.example.nmedia.viewmodel.PostViewModel
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
         val viewModel: PostViewModel by viewModels()
 
        val newPostLauncher =  registerForActivityResult(NewPostActivityContract()){ result->
