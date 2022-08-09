@@ -42,15 +42,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = post
     }
 
-    fun changeContent(contentData: ContentData) {
-        val text = contentData.textContent?.trim()
-        val videoLink = contentData.videoContent?.trim()
-        if (edited.value?.content == text && edited.value?.videoLink ==videoLink) {
+    fun changeContent(content:String) {
+        val text = content?.trim()
+      //  val videoLink = contentData.videoContent?.trim()
+        if (edited.value?.content == text ) {
             return
         }
         edited.value = edited.value?.copy(
-                content = contentData.textContent,
-                videoLink = contentData.videoContent)
+                content = content,
+                )
     }
 
 }

@@ -4,16 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/common_spacing">
-
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/postGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="avatar,author,published,content"
-        />
+    android:layout_height="match_parent"
+    android:padding="@dimen/common_spacing"
+    tools:context=".activities.CurrentPostFragment">
 
     <ImageView
         android:id="@+id/avatar"
@@ -107,15 +100,25 @@
         app:layout_constraintStart_toStartOf="@id/videoContent"
         app:layout_constraintTop_toTopOf="@id/videoContent" />
 
+    <ListView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/share"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        />
+
 
     <TextView
         android:id="@+id/content"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:autoLink="web"
         android:lineSpacingMultiplier="1.5"
         android:paddingTop="@dimen/common_spacing"
         android:paddingBottom="@dimen/common_spacing"
+        app:layout_constraintBottom_toTopOf="@+id/share"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/videoContent"
@@ -139,8 +142,8 @@
         android:contentDescription="@string/description_post_like"
         android:textColor="@color/simple_elements_tint"
         app:icon="@drawable/ic_like_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/footer"
         tools:checked="@sample/posts.json/data/likedByMe"
         tools:text="@sample/posts.json/data/likes" />
 
@@ -156,7 +159,7 @@
         app:backgroundTint="@color/white"
         app:icon="@drawable/ic_share_24dp"
         app:layout_constraintStart_toEndOf="@+id/like"
-        app:layout_constraintTop_toBottomOf="@id/footer"
+        app:layout_constraintTop_toTopOf="@+id/like"
         tools:text="@sample/posts.json/data/shares" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

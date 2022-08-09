@@ -6,7 +6,7 @@
     android:padding="@dimen/common_spacing"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.NewPostActivity">
+    tools:context=".activities.NewPostFragment">
 
     <EditText
         android:id="@+id/videoLink"

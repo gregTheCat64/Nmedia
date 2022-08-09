@@ -6,47 +6,53 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.launch
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatViewInflater
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainer
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.nmedia.R
+import com.example.nmedia.adapter.OnInteractionListener
 import com.example.nmedia.adapter.PostAdapter
-import com.example.nmedia.adapter.PostEventListener
-import com.example.nmedia.databinding.ActivityMainBinding
+
+import com.example.nmedia.databinding.FragmentFeedBinding
 import com.example.nmedia.dto.Post
 import com.example.nmedia.viewmodel.PostViewModel
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+class FeedFragment : Fragment() {
+    val viewModel: PostViewModel by viewModels(
+        ownerProducer = ::requireParentFragment
+    )
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val binding = FragmentFeedBinding.inflate(
+            inflater,
+            container,
+            false
+        )
 
-        val viewModel: PostViewModel by viewModels()
-
-       val newPostLauncher =  registerForActivityResult(NewPostActivityContract()){ result->
-            result?: return@registerForActivityResult
-           if (result.textContent != null  || result.videoContent!= null){
-               viewModel.changeContent(result)
-               viewModel.save()
-           }
-
-        }
-        val editPostLauncher = registerForActivityResult(EditPostActivityContract()){result->
-            result?: return@registerForActivityResult
-            viewModel.changeContent(result)
-            viewModel.save()
-        }
 
 
         val adapter = PostAdapter(
-            object : PostEventListener {
+            object : OnInteractionListener {
+                override fun onOpen(post: Post) {
+                   findNavController().navigate(R.id.action_feedFragment_to_currentPostFragment)
+                }
+
                 override fun onEdit(post: Post) {
                     viewModel.edit(post)
-                    editPostLauncher.launch(post.content)
                 }
 
                 override fun onRemove(post: Post) {
@@ -71,17 +77,17 @@ class MainActivity : AppCompatActivity() {
 
                 @SuppressLint("QueryPermissionsNeeded")
                 override fun onPlay(post: Post) {
-                   Toast.makeText(applicationContext, post.videoLink.toString(), Toast.LENGTH_SHORT).show()
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink))
-                    if (intent.resolveActivity(packageManager) != null){
-                        startActivity(intent)
-                    }
+                 //   Toast.makeText(viewLifecycleOwner, post.videoLink.toString(), Toast.LENGTH_SHORT).show()
+//                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink))
+//                    if (intent.resolveActivity(packageManager) != null){
+//                        startActivity(intent)
+//                    }
                 }
             }
         )
 
         binding.list.adapter = adapter
-        viewModel.data.observe(this) { posts ->
+        viewModel.data.observe(viewLifecycleOwner) { posts ->
             val newPost = posts.size>adapter.currentList.size
             adapter.submitList(posts){
                 if(newPost) binding.list.smoothScrollToPosition(0)
@@ -90,8 +96,12 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.create.setOnClickListener {
-            newPostLauncher.launch()
+            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
+
+
+
+        return binding.root
     }
 
 }
