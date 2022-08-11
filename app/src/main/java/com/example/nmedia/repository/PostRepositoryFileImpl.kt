@@ -16,6 +16,7 @@ class PostRepositoryFileImpl (
     private var nextId = 1L
     private var posts = emptyList<Post>()
     private val data = MutableLiveData(posts)
+    private var lastId:Long? = 0L
 
     init {
         val file = context.filesDir.resolve(filename)
@@ -57,11 +58,12 @@ class PostRepositoryFileImpl (
     }
 
     override fun save(post: Post) {
+        lastId = posts.maxOfOrNull { it.id }
         if (post.id == 0L) {
             // TODO: remove hardcoded author & published
             posts = listOf(
                 post.copy(
-                    id = nextId++,
+                    id = lastId?.plus(1) ?: 1,
                     author = "Григорий Кот",
                     likedByMe = false,
                     published = "now"

@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    android:elevation="@dimen/small_spacing"
+    android:layout_margin="@dimen/small_spacing">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:padding="@dimen/common_spacing">
-
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/postGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="avatar,author,published,content"
-        />
-
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/posts_avatar_size"
@@ -137,6 +135,7 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:contentDescription="@string/description_post_like"
+
         android:textColor="@color/simple_elements_tint"
         app:icon="@drawable/ic_like_24dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -160,3 +159,7 @@
         tools:text="@sample/posts.json/data/shares" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.cardview.widget.CardView>

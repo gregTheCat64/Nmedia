@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import androidx.fragment.app.FragmentContainer
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.nmedia.R
+import com.example.nmedia.activities.NewPostFragment.Companion.textArg
 import com.example.nmedia.adapter.OnInteractionListener
 import com.example.nmedia.adapter.PostAdapter
 
@@ -47,11 +49,10 @@ class FeedFragment : Fragment() {
 
         val adapter = PostAdapter(
             object : OnInteractionListener {
-                override fun onOpen(post: Post) {
-                   findNavController().navigate(R.id.action_feedFragment_to_currentPostFragment)
-                }
 
                 override fun onEdit(post: Post) {
+                    val action = FeedFragmentDirections.actionFeedFragmentToNewPostFragment(post.content.toString(),post.videoLink.toString())
+                    findNavController().navigate(action)
                     viewModel.edit(post)
                 }
 
@@ -77,11 +78,16 @@ class FeedFragment : Fragment() {
 
                 @SuppressLint("QueryPermissionsNeeded")
                 override fun onPlay(post: Post) {
-                 //   Toast.makeText(viewLifecycleOwner, post.videoLink.toString(), Toast.LENGTH_SHORT).show()
-//                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink))
-//                    if (intent.resolveActivity(packageManager) != null){
-//                        startActivity(intent)
-//                    }
+
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink))
+//                    if (intent.resolveActivity(packageManager) != null){ // !!здесь не работает packageManager, пришлось избавиться от проверки
+                        startActivity(intent)
+              //      }
+                }
+
+                override fun onPost(post: Post) {
+                    val action = FeedFragmentDirections.actionFeedFragmentToCurrentPostFragment(post.id)
+                    findNavController().navigate(action)
                 }
             }
         )
@@ -96,7 +102,8 @@ class FeedFragment : Fragment() {
 
 
         binding.create.setOnClickListener {
-            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            val action = FeedFragmentDirections.actionFeedFragmentToNewPostFragment("","")
+            findNavController().navigate(action)
         }
 
 

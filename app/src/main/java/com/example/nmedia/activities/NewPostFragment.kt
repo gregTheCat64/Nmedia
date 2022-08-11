@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.nmedia.R
 import com.example.nmedia.databinding.FragmentNewPostBinding
 import com.example.nmedia.util.AndroidUtils
@@ -21,7 +22,11 @@ class NewPostFragment : Fragment() {
 
     companion object{
         var Bundle.textArg: String? by StringArg
+
     }
+
+    val args by navArgs<NewPostFragmentArgs>()
+
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
@@ -36,42 +41,27 @@ class NewPostFragment : Fragment() {
             false
         )
 
-        arguments?.textArg
-            ?.let (binding.content::setText)
-//
-//        val intent = Intent()
-//        intent?.let {
-//            val text = it.getStringExtra(Intent.EXTRA_TEXT)
-//            if (text.isNullOrBlank()) {
-//            //    Toast.makeText(this, "Новый пост", Toast.LENGTH_SHORT).show()
-//            } else binding.content.setText(text.toString())
-//        }
+
+        binding.content.setText(args.content)
+        if (!args.videoLink.isNullOrEmpty()){
+            binding.videoLink.visibility = View.VISIBLE
+            binding.videoLink.setText(args.videoLink.toString())
+        }
+        binding.attachBtn.setOnClickListener {
+            binding.videoLink.visibility = View.VISIBLE
+        }
+
 
         binding.content.requestFocus()
+
         binding.save.setOnClickListener {
-        viewModel.changeContent(binding.content.text.toString())
+        viewModel.changeContent(binding.content.text.toString(), binding.videoLink.text.toString())
+
             viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
 
-//            var result: Intent = Intent()
-//            result.run {
-//                if (binding.videoLink.text.isNullOrBlank() && binding.content.text.isNullOrBlank()) {
-//                    Toast.makeText(it.context, getString(R.string.PostIsBlank), Toast.LENGTH_SHORT)
-//                        .show()
-//                    activity?.setResult(Activity.RESULT_CANCELED)
-//
-//                }
-//                if (binding.videoLink.text.isNotBlank()) {
-//                    this.putExtra("VIDEOLINK", binding.videoLink.text.toString())
-//                }
-//                if (binding.content.text.isNotBlank()) {
-//                    this.putExtra("CONTENT", binding.content.text.toString())
-//                }
-//                activity?.setResult(Activity.RESULT_OK, result)
-//
-//            }
-            findNavController().navigateUp()
 
+            findNavController().navigateUp()
 
         }
         return binding.root

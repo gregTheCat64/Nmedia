@@ -17,7 +17,8 @@ interface OnInteractionListener{
     fun onLike(post: Post)
     fun onShare(post: Post)
     fun onPlay(post: Post)
-    fun onOpen(post: Post)
+    fun onPost(post: Post)
+
 }
 //typealias  OnLikeListener = (post: Post) -> Unit
 //typealias  OnShareListener = (post: Post) -> Unit
@@ -61,9 +62,11 @@ class PostViewHolder(
             author.text = post.author + " id: "+ post.id
        //     if (!post.content.isNullOrEmpty()) content.text = post.content else content.text = ""
             content.text = post.content
+
             published.text = post.published
             like.text = countFormat(post.countOfLikes)
             share.text = countFormat(post.countOfShares)
+
 
             like.isChecked = post.likedByMe
             like.setOnClickListener {
@@ -77,9 +80,11 @@ class PostViewHolder(
             playBtn.setOnClickListener{
                listener.onPlay(post)
             }
-            postGroup.setOnClickListener {
-                listener.onOpen(post)
+
+            root.setOnClickListener {
+                listener.onPost(post)
             }
+
 
             menu.setOnClickListener { it ->
                 PopupMenu(it.context, it).apply {
