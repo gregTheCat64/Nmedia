@@ -4,12 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.nmedia.db.AppDb
 import com.example.nmedia.dto.ContentData
 import com.example.nmedia.dto.Post
-import com.example.nmedia.repository.InMemoryPostRepository
-import com.example.nmedia.repository.PostRepository
-import com.example.nmedia.repository.PostRepositoryFileImpl
-import com.example.nmedia.repository.PostRepositorySharedPrefsImpl
+import com.example.nmedia.repository.*
 
 val empty = Post(
     0,
@@ -23,7 +21,7 @@ val empty = Post(
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: PostRepository = PostRepositoryFileImpl(application)
+    private val repository: PostRepository = PostRepositorySQLiteImpl(AppDb.getInstance(application).postDao)
     val data = repository.getAll()
     fun likeById(id: Long) = repository.likeById(id)
     fun sharedById(id: Long) = repository.shareById(id)

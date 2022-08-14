@@ -1,6 +1,7 @@
 package com.example.nmedia.activities
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -20,16 +22,20 @@ import com.example.nmedia.viewmodel.PostViewModel
 
 class NewPostFragment : Fragment() {
 
-    companion object{
+
+    companion object {
         var Bundle.textArg: String? by StringArg
 
     }
 
     val args by navArgs<NewPostFragmentArgs>()
 
+    var savedContent: String? = "1"
+
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,9 +47,25 @@ class NewPostFragment : Fragment() {
             false
         )
 
+        val sharedPrefs = requireActivity().getSharedPreferences("PREFS", Context.MODE_PRIVATE)
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            savedContent = binding.content.text.toString()
+            sharedPrefs?.edit()?.putString("SAVED_CONTENT", savedContent)?.apply()
+            findNavController().navigateUp()
+        }
 
-        binding.content.setText(args.content)
-        if (!args.videoLink.isNullOrEmpty()){
+
+        if (args.content.isNullOrEmpty()){
+            sharedPrefs?.getString("SAVED_CONTENT", "")?.let {
+                savedContent = it
+                binding.content.setText(savedContent.toString())
+            }
+        } else binding.content.setText(args.content)
+
+
+
+
+        if (!args.videoLink.isNullOrEmpty()) {
             binding.videoLink.visibility = View.VISIBLE
             binding.videoLink.setText(args.videoLink.toString())
         }
@@ -55,7 +77,11 @@ class NewPostFragment : Fragment() {
         binding.content.requestFocus()
 
         binding.save.setOnClickListener {
-        viewModel.changeContent(binding.content.text.toString(), binding.videoLink.text.toString())
+            sharedPrefs.edit().clear().apply()
+            viewModel.changeContent(
+                binding.content.text.toString(),
+                binding.videoLink.text.toString()
+            )
 
             viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
@@ -67,7 +93,7 @@ class NewPostFragment : Fragment() {
         return binding.root
     }
 
-    }
+}
 
 
 

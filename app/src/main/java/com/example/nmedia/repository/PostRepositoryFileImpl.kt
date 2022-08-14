@@ -32,6 +32,30 @@ class PostRepositoryFileImpl (
 
     override fun getAll(): LiveData<List<Post>> = data
 
+    override fun save(post: Post) {
+        lastId = posts.maxOfOrNull { it.id }
+        if (post.id == 0L) {
+            // TODO: remove hardcoded author & published
+            posts = listOf(
+                post.copy(
+                    id = lastId?.plus(1) ?: 1,
+                    author = "Григорий Кот",
+                    likedByMe = false,
+                    published = "now"
+                )
+            ) + posts
+            data.value = posts
+            sync()
+            return
+        }
+
+        posts = posts.map {
+            if (it.id != post.id) it else it.copy(content = post.content, videoLink = post.videoLink)
+        }
+        data.value = posts
+        sync()
+    }
+
     override fun likeById(id: Long) {
         posts = posts.map {
             if (it.id != id) it else it.copy(
@@ -57,29 +81,7 @@ class PostRepositoryFileImpl (
         sync()
     }
 
-    override fun save(post: Post) {
-        lastId = posts.maxOfOrNull { it.id }
-        if (post.id == 0L) {
-            // TODO: remove hardcoded author & published
-            posts = listOf(
-                post.copy(
-                    id = lastId?.plus(1) ?: 1,
-                    author = "Григорий Кот",
-                    likedByMe = false,
-                    published = "now"
-                )
-            ) + posts
-            data.value = posts
-            sync()
-            return
-        }
 
-        posts = posts.map {
-            if (it.id != post.id) it else it.copy(content = post.content, videoLink = post.videoLink)
-        }
-        data.value = posts
-        sync()
-    }
 
 
     private fun sync(){
