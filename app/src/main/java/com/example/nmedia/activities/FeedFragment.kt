@@ -51,7 +51,7 @@ class FeedFragment : Fragment() {
             object : OnInteractionListener {
 
                 override fun onEdit(post: Post) {
-                    val action = FeedFragmentDirections.actionFeedFragmentToNewPostFragment(post.content.toString(),post.videoLink.toString())
+                    val action = FeedFragmentDirections.actionFeedFragmentToNewPostFragment(post.content.toString(),post.content.toString())
                     findNavController().navigate(action)
                     viewModel.edit(post)
                 }

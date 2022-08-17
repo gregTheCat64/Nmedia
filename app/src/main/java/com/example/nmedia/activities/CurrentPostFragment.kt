@@ -43,7 +43,7 @@ class CurrentPostFragment: Fragment(){
         val viewHolder = PostViewHolder(binding.cardPost, object : OnInteractionListener {
 
             override fun onEdit(post: Post) {
-                val action = CurrentPostFragmentDirections.actionCurrentPostFragmentToNewPostFragment(post.content.toString(),post.videoLink.toString())
+                val action = CurrentPostFragmentDirections.actionCurrentPostFragmentToNewPostFragment(post.content.toString(),post.content.toString())
                 findNavController().navigate(action)
                 viewModel.edit(post)
             }

@@ -54,15 +54,12 @@ class NewPostFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-
         if (args.content.isNullOrEmpty()){
             sharedPrefs?.getString("SAVED_CONTENT", "")?.let {
                 savedContent = it
                 binding.content.setText(savedContent.toString())
             }
         } else binding.content.setText(args.content)
-
-
 
 
         if (!args.videoLink.isNullOrEmpty()) {
@@ -73,7 +70,6 @@ class NewPostFragment : Fragment() {
             binding.videoLink.visibility = View.VISIBLE
         }
 
-
         binding.content.requestFocus()
 
         binding.save.setOnClickListener {
@@ -82,13 +78,9 @@ class NewPostFragment : Fragment() {
                 binding.content.text.toString(),
                 binding.videoLink.text.toString()
             )
-
             viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
-
-
             findNavController().navigateUp()
-
         }
         return binding.root
     }

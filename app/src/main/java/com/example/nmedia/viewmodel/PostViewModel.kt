@@ -3,9 +3,7 @@ package com.example.nmedia.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.nmedia.db.AppDb
-import com.example.nmedia.dto.ContentData
 import com.example.nmedia.dto.Post
 import com.example.nmedia.repository.*
 
@@ -21,7 +19,9 @@ val empty = Post(
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: PostRepository = PostRepositorySQLiteImpl(AppDb.getInstance(application).postDao)
+    private val repository: PostRepository = PostRepositoryImpl(
+        AppDb.getInstance(context = application).postDao()
+    )
     val data = repository.getAll()
     fun likeById(id: Long) = repository.likeById(id)
     fun sharedById(id: Long) = repository.shareById(id)

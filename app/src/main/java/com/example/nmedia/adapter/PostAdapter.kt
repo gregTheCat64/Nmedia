@@ -112,7 +112,7 @@ class PostViewHolder(
 }
 
 //функция для конвертации 1000 в 1к и тд:
-fun countFormat(counter: Long): String {
+fun countFormat(counter: Int): String {
     val char = counter.toString().toCharArray()
     val firstSymbol = char[0]
     var secondSymbol: Char = '_'
