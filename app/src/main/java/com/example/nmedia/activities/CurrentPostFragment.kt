@@ -2,6 +2,7 @@ package com.example.nmedia.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -43,7 +44,7 @@ class CurrentPostFragment: Fragment(){
         val viewHolder = PostViewHolder(binding.cardPost, object : OnInteractionListener {
 
             override fun onEdit(post: Post) {
-                val action = CurrentPostFragmentDirections.actionCurrentPostFragmentToNewPostFragment(post.content.toString(),post.content.toString())
+                val action = CurrentPostFragmentDirections.actionCurrentPostFragmentToNewPostFragment(post.content.toString(),post.videoLink.toString())
                 findNavController().navigate(action)
                 viewModel.edit(post)
             }
@@ -70,11 +71,11 @@ class CurrentPostFragment: Fragment(){
 
             @SuppressLint("QueryPermissionsNeeded")
             override fun onPlay(post: Post) {
-                //   Toast.makeText(viewLifecycleOwner, post.videoLink.toString(), Toast.LENGTH_SHORT).show()
-//                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink))
-//                    if (intent.resolveActivity(packageManager) != null){
-//                        startActivity(intent)
-//                    }
+  //                 Toast.makeText(viewLifecycleOwner, post.videoLink.toString(), Toast.LENGTH_SHORT).show()
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoLink))
+           //         if (intent.resolveActivity(packageManager) != null){
+                        startActivity(intent)
+            //        }
             }
 
             override fun onPost(post: Post) {
