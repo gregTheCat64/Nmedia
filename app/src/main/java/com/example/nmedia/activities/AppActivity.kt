@@ -3,9 +3,12 @@ package com.example.nmedia.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.navigation.findNavController
 import com.example.nmedia.R
 import com.example.nmedia.activities.NewPostFragment.Companion.textArg
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +31,22 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                     textArg = text
                 }
             )
+        }
+        checkGoogleApiAvailability()
+
+    }
+
+    private fun checkGoogleApiAvailability(){
+        with(GoogleApiAvailability.getInstance()){
+            val code = isGooglePlayServicesAvailable(this@AppActivity)
+            if (code == ConnectionResult.SUCCESS){
+                return@with
+            }
+            if (isUserResolvableError(code)) {
+                getErrorDialog(this@AppActivity, code, 9000)?.show()
+                return
+            }
+            Toast.makeText(this@AppActivity, "Google Api Unavailable", Toast.LENGTH_SHORT).show()
         }
     }
 }

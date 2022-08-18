@@ -29,4 +29,8 @@ class PostRepositoryImpl(
     override fun save(post: Post) {
         dao.save(PostEntity.fromDto(post))
     }
+
+//    override fun getPostById(id: Long): Post =
+//        dao.getPostById(id).toDto()
+
 }

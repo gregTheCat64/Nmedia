@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Nmedia"
 include ':app'
+include ':app:pusher'

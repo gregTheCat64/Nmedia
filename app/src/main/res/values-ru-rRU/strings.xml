@@ -9,4 +9,6 @@
     <string name="now">сейчас</string>
     <string name="PostIsBlank">Пост пустой</string>
     <string name="input_video_link_here">Место для вставки ссылки на видео</string>
+    <string name="notification_user_liked">Пользователю %1$s понравился пост %2$s</string>
+    <string name="notification_new_post">%1$s опубликовал новый пост</string>
 </resources>

@@ -48,7 +48,7 @@ class NewPostFragment : Fragment() {
         )
 
         val sharedPrefs = requireActivity().getSharedPreferences("PREFS", Context.MODE_PRIVATE)
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
             savedContent = binding.content.text.toString()
             sharedPrefs?.edit()?.putString("SAVED_CONTENT", savedContent)?.apply()
             findNavController().navigateUp()

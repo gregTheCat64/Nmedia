@@ -9,9 +9,9 @@ import com.example.nmedia.repository.*
 
 val empty = Post(
     0,
+    "Григорий Кот",
     "",
-    "",
-    "",
+    "now",
     false,
     0,
     0,

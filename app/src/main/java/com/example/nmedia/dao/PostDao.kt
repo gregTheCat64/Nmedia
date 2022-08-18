@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.nmedia.dto.Post
 import com.example.nmedia.entity.PostEntity
 
 @Dao
@@ -41,4 +42,7 @@ interface PostDao {
         """
     )
     fun shareById(id: Long)
+
+//    @Query("SELECT * FROM PostEntity WHERE id = :id")
+//    fun getPostById(id:Long): PostEntity
 }
