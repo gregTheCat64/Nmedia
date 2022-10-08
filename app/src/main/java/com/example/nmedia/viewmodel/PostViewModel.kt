@@ -1,37 +1,65 @@
 package com.example.nmedia.viewmodel
 
 import android.app.Application
+import android.content.Context
+import android.view.LayoutInflater
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.nmedia.db.AppDb
+import com.example.nmedia.databinding.FragmentFeedBinding
 import com.example.nmedia.dto.Post
+import com.example.nmedia.model.FeedModel
 import com.example.nmedia.repository.*
+import com.example.nmedia.util.SingleLiveEvent
+import java.io.IOException
+import kotlin.concurrent.thread
 
-val empty = Post(
-    0,
-    "Григорий Кот",
-    "",
-    "now",
-    false,
-    0,
-    0,
-    null
+private val empty = Post(
+    id = 0,
+    content = "",
+    author = "",
+    likedByMe = false,
+    countOfLikes = 0,
+    published = ""
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: PostRepository = PostRepositoryImpl(
-        AppDb.getInstance(context = application).postDao()
-    )
-    val data = repository.getAll()
-    fun likeById(id: Long) = repository.likeById(id)
-    fun sharedById(id: Long) = repository.shareById(id)
-    fun removeById(id: Long) = repository.removeById(id)
+    // упрощённый вариант
+    private val repository: PostRepository = PostRepositoryImpl()
+    private val _data = MutableLiveData(FeedModel())
+    val data: LiveData<FeedModel>
+        get() = _data
+    val edited = MutableLiveData(empty)
+    private val _postCreated = SingleLiveEvent<Unit>()
+    val postCreated: LiveData<Unit>
+        get() = _postCreated
 
-    private val edited = MutableLiveData(empty)
+    init {
+        loadPosts()
+    }
+
+    fun loadPosts() {
+        thread {
+            // Начинаем загрузку
+            _data.postValue(FeedModel(loading = true))
+            try {
+                // Данные успешно получены
+                val posts = repository.getAll()
+                FeedModel(posts = posts, empty = posts.isEmpty())
+            } catch (e: IOException) {
+                // Получена ошибка
+                FeedModel(error = true)
+            }.also(_data::postValue)
+        }
+
+    }
 
     fun save() {
         edited.value?.let {
-            repository.save(it)
+            thread {
+                repository.save(it)
+                _postCreated.postValue(Unit)
+            }
         }
         edited.value = empty
     }
@@ -40,20 +68,44 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = post
     }
 
-    fun changeContent(content:String, videoLink:String?) {
-        val text = content?.trim()
-        val videoLink = videoLink?.trim()
-        if (edited.value?.content == text && edited.value?.videoLink == videoLink?.trim()) {
+    fun changeContent(content: String) {
+        val text = content.trim()
+        if (edited.value?.content == text) {
             return
         }
-        edited.value = edited.value?.copy(
-                content = content,
-                videoLink = videoLink
-                )
+        edited.value = edited.value?.copy(content = text)
     }
 
-}
+    fun likeById(id: Long) {
+        thread {
+            repository.dislikeById(id)
+       }
+    }
 
-//fun cancelEditing() {
-//    edited.value = empty
-//}
+    fun dislikeById(id:Long){
+        thread { repository.dislikeById(id)
+            }
+
+    }
+
+    fun refresh(){
+        loadPosts()
+    }
+
+    fun removeById(id: Long) {
+        thread {
+            // Оптимистичная модель
+            val old = _data.value?.posts.orEmpty()
+            _data.postValue(
+                _data.value?.copy(posts = _data.value?.posts.orEmpty()
+                    .filter { it.id != id }
+                )
+            )
+            try {
+                repository.removeById(id)
+            } catch (e: IOException) {
+                _data.postValue(_data.value?.copy(posts = old))
+            }
+        }
+    }
+}

@@ -4,11 +4,10 @@ import androidx.lifecycle.LiveData
 import com.example.nmedia.dto.Post
 
 interface PostRepository {
-    fun getAll():LiveData<List<Post>>
-    fun likeById(id:Long)
-    fun shareById(id: Long)
+    fun getAll(): List<Post>
+    fun likeById(id:Long):Post
+    fun dislikeById(id:Long):Post
     fun removeById(id: Long)
     fun save(post: Post)
-//    fun getPostById(id: Long):Post
 
 }
