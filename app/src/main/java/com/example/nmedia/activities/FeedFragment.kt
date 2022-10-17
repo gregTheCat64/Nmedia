@@ -33,8 +33,7 @@ class FeedFragment : Fragment() {
             override fun onLike(post: Post) {
                 if (post.likedByMe){
                     viewModel.dislikeById(post.id)
-                } else viewModel.likeById(post.id)
-                //viewModel.loadPosts()
+                } else {viewModel.likeById(post.id)}
             }
 
             override fun onRemove(post: Post) {
@@ -54,13 +53,13 @@ class FeedFragment : Fragment() {
             }
         })
         binding.list.adapter = adapter
-        viewModel.data.observe(viewLifecycleOwner, { state ->
+        viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.posts)
             binding.progress.isVisible = state.loading
             binding.errorGroup.isVisible = state.error
             binding.emptyText.isVisible = state.empty
             binding.swiprefresh.isRefreshing = state.loading
-        })
+        }
 
         binding.retryButton.setOnClickListener {
             viewModel.loadPosts()

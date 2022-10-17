@@ -78,14 +78,35 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun likeById(id: Long) {
         thread {
-            repository.dislikeById(id)
+            val old = _data.value?.posts.orEmpty()
+            val posts = _data.value?.posts.orEmpty()
+            posts.map{
+                if (it.id != id) it else it.copy(likedByMe = true, countOfLikes = +1)
+            }
+
+            try {
+                repository.likeById(id)
+            } catch (e: IOException) {
+                _data.postValue(_data.value?.copy(posts = old))
+            }
+
        }
     }
 
     fun dislikeById(id:Long){
-        thread { repository.dislikeById(id)
+        thread {
+            val old = _data.value?.posts.orEmpty()
+            val posts = _data.value?.posts.orEmpty()
+            posts.map{
+                if (it.id != id) it else it.copy(likedByMe = false, countOfLikes = -1)
             }
 
+            try {
+                repository.dislikeById(id)
+            } catch (e: IOException) {
+                _data.postValue(_data.value?.copy(posts = old))
+            }
+            }
     }
 
     fun refresh(){
