@@ -19,7 +19,7 @@ private val empty = Post(
     content = "",
     author = "",
     likedByMe = false,
-    countOfLikes = 0,
+    likes = 0,
     published = ""
 )
 
@@ -78,34 +78,29 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun likeById(id: Long) {
         thread {
-            val old = _data.value?.posts.orEmpty()
-            val posts = _data.value?.posts.orEmpty()
-            posts.map{
-                if (it.id != id) it else it.copy(likedByMe = true, countOfLikes = +1)
-            }
+            val updatedPost = repository.likeById(id)
+            var posts = _data.value?.posts.orEmpty()
 
-            try {
-                repository.likeById(id)
-            } catch (e: IOException) {
-                _data.postValue(_data.value?.copy(posts = old))
+            posts = posts.map{
+                if (it.id != id) it else it.copy(
+                    likedByMe = updatedPost.likedByMe,
+                    likes = updatedPost.likes)
             }
-
+            _data.postValue(FeedModel(posts = posts))
        }
     }
 
     fun dislikeById(id:Long){
         thread {
-            val old = _data.value?.posts.orEmpty()
-            val posts = _data.value?.posts.orEmpty()
-            posts.map{
-                if (it.id != id) it else it.copy(likedByMe = false, countOfLikes = -1)
-            }
+            val updatedPost = repository.dislikeById(id)
+            var posts = _data.value?.posts.orEmpty()
 
-            try {
-                repository.dislikeById(id)
-            } catch (e: IOException) {
-                _data.postValue(_data.value?.copy(posts = old))
+            posts = posts.map{
+                if (it.id != id) it else it.copy(
+                    likedByMe = updatedPost.likedByMe,
+                    likes = updatedPost.likes)
             }
+            _data.postValue(FeedModel(posts = posts))
             }
     }
 

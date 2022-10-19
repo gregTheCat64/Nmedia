@@ -44,7 +44,7 @@ class PostViewHolder(
             content.text = post.content
             // в адаптере
             like.isChecked = post.likedByMe
-            like.text = "${post.countOfLikes}"
+            like.text = "${post.likes}"
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
