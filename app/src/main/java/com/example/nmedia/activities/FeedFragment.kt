@@ -9,9 +9,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.nmedia.R
+import com.example.nmedia.adapter.BASE_URL
 import com.example.nmedia.adapter.OnInteractionListener
 import com.example.nmedia.adapter.PostAdapter
+import com.example.nmedia.databinding.CardPostBinding
 import com.example.nmedia.databinding.FragmentFeedBinding
 import com.example.nmedia.dto.Post
 import com.example.nmedia.viewmodel.PostViewModel
@@ -52,6 +55,7 @@ class FeedFragment : Fragment() {
                 startActivity(shareIntent)
             }
         })
+
         binding.list.adapter = adapter
         viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.posts)
@@ -77,3 +81,5 @@ class FeedFragment : Fragment() {
         return binding.root
     }
 }
+
+

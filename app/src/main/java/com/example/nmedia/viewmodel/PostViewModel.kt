@@ -18,9 +18,11 @@ private val empty = Post(
     id = 0,
     content = "",
     author = "",
+    authorAvatar = "",
     likedByMe = false,
     likes = 0,
-    published = ""
+    published = "",
+    attachment = null
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
@@ -52,9 +54,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun save() {
+        var oldPosts = _data.value?.posts.orEmpty()
         edited.value?.let {
-            repository.saveAsync(it, object : PostRepository.SaveAndRemovePostsCallback {
-                override fun onSuccess() {
+            repository.saveAsync(it, object : PostRepository.PostsCallback<Post> {
+                override fun onSuccess(post: Post) {
+                    oldPosts = listOf(post)+oldPosts
+                    _data.postValue(FeedModel(posts = oldPosts))
                     _postCreated.postValue(Unit)
                 }
 
