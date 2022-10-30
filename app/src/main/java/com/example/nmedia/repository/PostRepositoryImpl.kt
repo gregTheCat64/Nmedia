@@ -69,6 +69,7 @@ override fun likeById(id: Long, callback: PostRepository.Callback<Post>) {
                     return
                 }
                 callback.onSuccess(response.body() ?: throw RuntimeException("body is null"))
+                print(response.body())
             }
 
             override fun onFailure(call: Call<Post>, t: Throwable) {

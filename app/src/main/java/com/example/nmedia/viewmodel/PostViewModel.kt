@@ -104,15 +104,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
 
         })
-//            val updatedPost = repository.likeByIdAsync(id)
-//            var posts = _data.value?.posts.orEmpty()
-//
-//            posts = posts.map{
-//                if (it.id != id) it else it.copy(
-//                    likedByMe = updatedPost.likedByMe,
-//                    likes = updatedPost.likes)
-//            }
-//            _data.postValue(FeedModel(posts = posts))
     }
 
 
