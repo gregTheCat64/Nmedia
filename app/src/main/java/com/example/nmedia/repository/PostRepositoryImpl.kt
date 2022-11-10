@@ -37,7 +37,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
 
     override suspend fun save(post: Post) {
-        dao.insert(PostEntity.fromDto(post))
+       val tempId =  dao.insert(PostEntity.fromDto(post))
         try {
             val response = PostApi.service.save(post)
             if (!response.isSuccessful) {
@@ -45,6 +45,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             body.savedOnServer = true
+            dao.removeById(tempId)
             dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
