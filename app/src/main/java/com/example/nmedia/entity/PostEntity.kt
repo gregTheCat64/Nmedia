@@ -2,7 +2,6 @@ package com.example.nmedia.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.nmedia.dto.Attachment
 import com.example.nmedia.dto.Post
 
 @Entity
@@ -15,15 +14,16 @@ data class PostEntity(
     val published: String,
     val likedByMe: Boolean,
     val likes: Int = 0,
+    val toShow:Boolean,
     //val attachment: Attachment?,
-    val savedOnServer: Boolean
+    //val savedOnServer: Boolean
 
 ) {
-    fun toDto() = Post(id, author, authorAvatar, content, published, likedByMe, likes, savedOnServer)
+    fun toDto() = Post(id, author, authorAvatar, content, published, likedByMe, likes, toShow)
 
     companion object {
         fun fromDto(dto: Post) =
-            PostEntity(dto.id, dto.author, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes,  dto.savedOnServer)
+            PostEntity(dto.id, dto.author, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes, dto.toShow)
 
     }
 }

@@ -1,19 +1,17 @@
 package com.example.nmedia.viewmodel
 
 import android.app.Application
-import android.content.Context
-import android.view.LayoutInflater
 import androidx.lifecycle.*
-import com.example.nmedia.databinding.FragmentFeedBinding
 import com.example.nmedia.db.AppDb
 import com.example.nmedia.dto.Post
 import com.example.nmedia.model.FeedModel
 import com.example.nmedia.model.FeedModelState
 import com.example.nmedia.repository.*
 import com.example.nmedia.util.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.io.IOException
-import kotlin.concurrent.thread
 
 private val empty = Post(
     id = 0,
@@ -23,32 +21,34 @@ private val empty = Post(
     likedByMe = false,
     likes = 0,
     published = "",
+    toShow = false
     //attachment = null
-    savedOnServer = false
+    //savedOnServer = false
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: PostRepository =
         PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
-    val data: LiveData<FeedModel> = repository.data.map(::FeedModel)
+    val data: LiveData<FeedModel> = repository.data
+        .map(::FeedModel)
+        .asLiveData(Dispatchers.Default)
+
     private val _dataState = MutableLiveData<FeedModelState>(FeedModelState(idle = true))
     val dataState: LiveData<FeedModelState>
         get() = _dataState
+
+    val newerCount: LiveData<Int> = data.switchMap {
+        repository.getNewerCount(it.posts.firstOrNull()?.id ?: 0L)
+            .catch { e -> e.printStackTrace() }
+            .asLiveData(Dispatchers.Default)
+    }
 
     private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
-//    private val _data = MutableLiveData(FeedModel())
-//    val data: LiveData<FeedModel>
-//        get() = _data
-//    private val edited = MutableLiveData(empty)
-//    private val _postCreated = SingleLiveEvent<Unit>()
-//    val postCreated: LiveData<Unit>
-//        get() = _postCreated
-//    private val _requestCode = MutableLiveData<Int>()
-//    val requestCode: LiveData<Int> = _requestCode
+
 
     init {
         loadPosts()
@@ -65,20 +65,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-//        _data.value = FeedModel(loading = true)
-//        repository.getAllAsync(object : PostRepository.Callback<List<Post>> {
-//            override fun onSuccess(posts: List<Post>) {
-//                _data.value = FeedModel(posts = posts, empty = posts.isEmpty())
-//            }
-//
-//            override fun onError(e: Exception, requestCode: Int) {
-//                _data.value = FeedModel(error = true)
-//                _requestCode.value = requestCode
-//            }
-//
-//        })
-
-
     fun save() {
         edited.value?.let {
             _postCreated.value = Unit
@@ -92,24 +78,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
         edited.value = empty
-//        var oldPosts = _data.value?.posts.orEmpty()
-//        edited.value?.let {
-//            repository.save(it, object : PostRepository.Callback<Post> {
-//                override fun onSuccess(post: Post) {
-//                    oldPosts = listOf(post)+oldPosts
-//                    _data.postValue(FeedModel(posts = oldPosts))
-//                    _postCreated.value = Unit
-//                }
-//
-//                override fun onError(e: Exception, requestCode: Int) {
-//                    _data.value = FeedModel(error = true)
-//                    _requestCode.value = requestCode
-//                }
-//
-//
-//            })
-//        }
-//        edited.value = empty
     }
 
     fun edit(post: Post) {
@@ -133,24 +101,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _dataState.value = FeedModelState(error = true)
             }
         }
-//        var oldPosts = _data.value?.posts.orEmpty()
-//        repository.likeById(id, object : PostRepository.Callback<Post> {
-//            override fun onSuccess(post: Post) {
-//                oldPosts = oldPosts.map {
-//                    if (it.id != id) it else it.copy(
-//                        likedByMe = post.likedByMe,
-//                        likes = post.likes
-//                    )
-//                }
-//                _data.value = FeedModel(posts = oldPosts)
-//            }
-//
-//            override fun onError(e: Exception, requestCode: Int) {
-//                _data.value = FeedModel(error = true)
-//                _requestCode.value = requestCode
-//            }
-//
-//        })
     }
 
 
@@ -162,6 +112,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             } catch (e: Exception) {
                 _dataState.value = FeedModelState(error = true)
             }
+        }
+    }
+
+    fun updateShownStatus(){
+        viewModelScope.launch {
+            repository.updateShownStatus()
         }
     }
 
@@ -184,22 +140,5 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _dataState.value = FeedModelState(error = true)
             }
         }
-//        repository.removeById(id, object : PostRepository.RemCallback {
-//            override fun onSuccess() {
-//                _data.postValue(
-//                    _data.value?.copy(posts = _data.value?.posts.orEmpty()
-//                        .filter { it.id != id }
-//                    )
-//                )
-//            }
-//            override fun onError(e: Exception, requestCode: Int) {
-//                _data.value = FeedModel(error = true)
-//                _requestCode.value = requestCode
-//            }
-//
-//        })
-//
-//    }
-
     }
 }

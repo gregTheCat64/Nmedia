@@ -26,7 +26,7 @@ class NewPostFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentNewPostBinding.inflate(
+        val binding = com.example.nmedia.databinding.FragmentNewPostBinding.inflate(
             inflater,
             container,
             false

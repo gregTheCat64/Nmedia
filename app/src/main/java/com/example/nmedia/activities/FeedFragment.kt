@@ -36,9 +36,11 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLike(post: Post) {
-                if (post.likedByMe){
+                if (post.likedByMe) {
                     viewModel.dislikeById(post.id)
-                } else {viewModel.likeById(post.id)}
+                } else {
+                    viewModel.likeById(post.id)
+                }
             }
 
             override fun onRemove(post: Post) {
@@ -60,23 +62,41 @@ class FeedFragment : Fragment() {
 
         binding.list.adapter = adapter
         viewModel.data.observe(viewLifecycleOwner) { state ->
-            val newPost = state.posts.size>adapter.currentList.size
-            adapter.submitList(state.posts){
+            val newPost = state.posts.size > adapter.currentList.size
+            adapter.submitList(state.posts) {
                 if (newPost) binding.list.smoothScrollToPosition(0)
             }
             binding.emptyText.isVisible = state.empty
 
         }
-        viewModel.dataState.observe(viewLifecycleOwner){ state ->
+        viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.progress.isVisible = state.loading
-            if (state.error){
-                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG).setAction(R.string.retry_loading){
-                    viewModel.refresh()
-                }
+            if (state.error) {
+                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.retry_loading) {
+                        viewModel.refresh()
+                    }
                     .show()
             }
             //binding.errorGroup.isVisible = state.error
             binding.swiprefresh.isRefreshing = state.refreshing
+        }
+
+        viewModel.newerCount.observe(viewLifecycleOwner) { state ->
+
+            if (state != 0){
+                val btnText = "Новая запись ($state)"
+                binding.newerPostsBtn.text = btnText
+                binding.newerPostsBtn.visibility = View.VISIBLE
+            }
+
+            println("state: $state")
+        }
+
+        binding.newerPostsBtn.setOnClickListener {
+            viewModel.loadPosts()
+            viewModel.updateShownStatus()
+            it.visibility = View.GONE
         }
 
 
