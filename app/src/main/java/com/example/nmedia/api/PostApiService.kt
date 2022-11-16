@@ -1,7 +1,9 @@
 package com.example.nmedia.api
 
 import com.example.nmedia.BuildConfig
+import com.example.nmedia.dto.Media
 import com.example.nmedia.dto.Post
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -51,7 +53,13 @@ interface PostApiService {
 
     @DELETE("posts/{id}/likes")
     suspend fun dislikeById(@Path("id") id: Long): Response<Post>
+
+    @Multipart
+    @POST("media")
+    suspend fun uploadPic(@Part media: MultipartBody.Part): Response<Media>
+
 }
+
 
 object PostApi {
     val service: PostApiService by lazy{ retrofit.create(PostApiService::class.java)}

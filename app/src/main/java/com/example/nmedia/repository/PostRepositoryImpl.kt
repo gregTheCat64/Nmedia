@@ -5,12 +5,15 @@ import kotlinx.coroutines.flow.*
 import com.example.nmedia.appError.*
 import com.example.nmedia.api.PostApi
 import com.example.nmedia.dao.PostDao
-import com.example.nmedia.dto.Post
+import com.example.nmedia.dto.*
 import com.example.nmedia.entity.PostEntity
 import com.example.nmedia.entity.toDto
 import com.example.nmedia.entity.toEntity
+import com.example.nmedia.model.PhotoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.IOException
 
 
@@ -29,6 +32,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             for (i in body){
                 i.toShow = true
+                i.savedOnServer = true
             }
             dao.insert(body.toEntity())
         } catch (e: IOException) {
@@ -69,6 +73,8 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
+            body.toShow = true
+            body.savedOnServer = true
             dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
@@ -76,6 +82,35 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             throw UnknownError
         }
 
+    }
+
+    override suspend fun saveWithAttachment(post: Post, upload: MediaUpload) {
+        try {
+            val file = uploadFile(upload)
+            val postWithAttachment = post.copy(attachment = Attachment(file.id, AttachmentType.IMAGE), toShow = true, savedOnServer = true)
+            save(postWithAttachment)
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
+
+    private suspend fun uploadFile(upload: MediaUpload): Media {
+        try {
+            val part = MultipartBody.Part.createFormData(
+                "file",
+                upload.file.name,
+                upload.file.asRequestBody()
+            )
+            val response = PostApi.service.uploadPic(part)
+            return response.body() ?: throw ApiError(response.code(), response.message())
+
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
 
@@ -123,7 +158,6 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-
 
         } catch (e: IOException) {
             throw NetworkError

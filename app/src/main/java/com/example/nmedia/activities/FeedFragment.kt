@@ -58,6 +58,11 @@ class FeedFragment : Fragment() {
                     Intent.createChooser(intent, getString(R.string.chooser_share_post))
                 startActivity(shareIntent)
             }
+
+            override fun onImage(post: Post) {
+                val action = FeedFragmentDirections.actionFeedFragmentToImageFragment(post.attachment?.url.toString())
+                findNavController().navigate(action)
+            }
         })
 
         binding.list.adapter = adapter
@@ -71,6 +76,7 @@ class FeedFragment : Fragment() {
         }
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.progress.isVisible = state.loading
+            binding.swiprefresh.isRefreshing = state.refreshing
             if (state.error) {
                 Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
                     .setAction(R.string.retry_loading) {
@@ -110,8 +116,8 @@ class FeedFragment : Fragment() {
 
         binding.swiprefresh.setOnRefreshListener {
             viewModel.refresh()
-
         }
+
 
         return binding.root
     }

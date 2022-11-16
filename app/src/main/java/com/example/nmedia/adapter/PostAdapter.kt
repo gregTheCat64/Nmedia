@@ -17,6 +17,7 @@ interface OnInteractionListener {
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     fun onShare(post: Post) {}
+    fun onImage(post: Post) {}
 }
 
 val BASE_URL = "http://10.0.2.2:9999"
@@ -43,20 +44,20 @@ class PostViewHolder(
 
     fun bind(post: Post) {
         getAvatars(post,binding)
-//        if (post.attachment!=null){
-//            binding.attachImage.visibility = View.VISIBLE
-//            getAttachment(post,binding)
-//        } else binding.attachImage.visibility = View.GONE
-//        if (!post.savedOnServer){
-//            binding.like.visibility = View.INVISIBLE
-//            binding.share.visibility = View.INVISIBLE
-//        } else {
-//            binding.like.visibility = View.VISIBLE
-//            binding.share.visibility = View.VISIBLE
-//        }
-//        if (post.savedOnServer){
-//            binding.savedOnServer.setImageResource(R.drawable.ic_baseline_public_24)
-//        } else binding.savedOnServer.setImageResource(R.drawable.ic_baseline_public_off_24)
+        if (post.attachment!=null){
+            binding.attachImage.visibility = View.VISIBLE
+            getAttachment(post,binding)
+        } else binding.attachImage.visibility = View.GONE
+        if (!post.savedOnServer){
+            binding.like.visibility = View.INVISIBLE
+            binding.share.visibility = View.INVISIBLE
+        } else {
+            binding.like.visibility = View.VISIBLE
+            binding.share.visibility = View.VISIBLE
+        }
+        if (post.savedOnServer){
+            binding.savedOnServer.setImageResource(R.drawable.ic_baseline_public_24)
+        } else binding.savedOnServer.setImageResource(R.drawable.ic_baseline_public_off_24)
 
         binding.apply {
             author.text = post.author
@@ -86,6 +87,10 @@ class PostViewHolder(
                 }.show()
             }
 
+            attachImage.setOnClickListener {
+                onInteractionListener.onImage(post)
+            }
+
             like.setOnClickListener {
                 onInteractionListener.onLike(post)
             }
@@ -107,13 +112,13 @@ fun getAvatars(post: Post, binding: CardPostBinding){
         .into(binding.avatar)
 }
 
-//fun getAttachment(post: Post, binding: CardPostBinding){
-//    Glide.with(binding.attachImage)
-//        .load("$BASE_URL/images/${post.attachment?.url}")
-//        .error(R.drawable.ic_baseline_cancel_24)
-//        .timeout(10_000)
-//        .into(binding.attachImage)
-//}
+fun getAttachment(post: Post, binding: CardPostBinding){
+    Glide.with(binding.attachImage)
+        .load("$BASE_URL/media/${post.attachment?.url}")
+        .error(R.drawable.ic_baseline_cancel_24)
+        .timeout(10_000)
+        .into(binding.attachImage)
+}
 
 class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
