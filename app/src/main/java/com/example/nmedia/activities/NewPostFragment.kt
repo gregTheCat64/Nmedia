@@ -85,7 +85,7 @@ class NewPostFragment : Fragment() {
 
         binding.pickPicBtn.setOnClickListener {
             ImagePicker.Builder(this)
-                .crop()
+                 .crop()
                 .galleryOnly()
                 .maxResultSize(2048,2048)
                 .createIntent {

@@ -45,6 +45,12 @@
                 />
 
         </action>
+        <action
+            android:id="@+id/action_feedFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
 
     </fragment>
     <fragment
@@ -95,4 +101,14 @@
             app:argType="string"
             />
     </fragment>
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.example.nmedia.activities.SignInFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in" />
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.example.nmedia.activities.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" />
 </navigation>

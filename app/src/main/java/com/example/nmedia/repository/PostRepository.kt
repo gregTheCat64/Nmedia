@@ -16,5 +16,7 @@ interface PostRepository {
     suspend fun likeById(id: Long)
     suspend fun dislikeById(id: Long)
     suspend fun updateShownStatus()
+    suspend fun updateUser(login: String, pass: String)
+    suspend fun registerUser(login: String, pass: String, name: String)
 
 }

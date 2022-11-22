@@ -1,8 +1,11 @@
 package com.example.nmedia.api
 
 import com.example.nmedia.BuildConfig
+import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.dto.Media
 import com.example.nmedia.dto.Post
+import com.example.nmedia.dto.Token
+import okhttp3.Interceptor
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,9 +24,20 @@ private val logging = HttpLoggingInterceptor().apply {
     }
 }
 
+private val authInterceptor =  Interceptor{ chain->
+    val request = AppAuth.getInstance().data.value?.token?.let {
+        chain.request()
+            .newBuilder()
+            .addHeader("Authorization", it)
+            .build()
+    } ?: chain.request()
+
+    chain.proceed(request)
+}
+
 private val client = OkHttpClient.Builder()
     .addInterceptor(logging)
-    .connectTimeout(30,TimeUnit.SECONDS)
+    .addInterceptor(authInterceptor)
     .build()
 
 private val retrofit = Retrofit.Builder()
@@ -58,6 +72,13 @@ interface PostApiService {
     @POST("media")
     suspend fun uploadPic(@Part media: MultipartBody.Part): Response<Media>
 
+    @FormUrlEncoded
+    @POST ("users/authentication")
+    suspend fun updateUser(@Field("login") login: String, @Field("pass") pass:String): Response<Token>
+
+    @FormUrlEncoded
+    @POST("users/registration")
+    suspend fun registerUser(@Field("login") login: String, @Field("pass") pass: String, @Field("name") name: String): Response<Token>
 }
 
 

@@ -1,5 +1,7 @@
 package com.example.nmedia.activities
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,12 +12,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.example.nmedia.R
-import com.example.nmedia.adapter.BASE_URL
 import com.example.nmedia.adapter.OnInteractionListener
 import com.example.nmedia.adapter.PostAdapter
-import com.example.nmedia.databinding.CardPostBinding
+import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.databinding.FragmentFeedBinding
 import com.example.nmedia.dto.Post
 import com.example.nmedia.viewmodel.PostViewModel
@@ -36,11 +36,14 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLike(post: Post) {
-                if (post.likedByMe) {
-                    viewModel.dislikeById(post.id)
-                } else {
-                    viewModel.likeById(post.id)
-                }
+                if (AppAuth.getInstance().data.value != null) {
+                    if (post.likedByMe) {
+                        viewModel.dislikeById(post.id)
+                    } else {
+                        viewModel.likeById(post.id)
+                    }
+                } else showSignInDialog()
+
             }
 
             override fun onRemove(post: Post) {
@@ -111,7 +114,9 @@ class FeedFragment : Fragment() {
         }
 
         binding.createBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            if (AppAuth.getInstance().data.value != null) {
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            } else showSignInDialog()
         }
 
         binding.swiprefresh.setOnRefreshListener {
@@ -120,6 +125,24 @@ class FeedFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    private fun showSignInDialog(){
+        val listener = DialogInterface.OnClickListener{_, which->
+        when(which) {
+            DialogInterface.BUTTON_POSITIVE -> findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
+            DialogInterface.BUTTON_NEGATIVE -> Toast.makeText(context, "Не забудьте авторизоваться", Toast.LENGTH_SHORT).show()
+        }
+        }
+        val dialog = AlertDialog.Builder(context)
+            .setCancelable(false)
+            .setTitle("Вы не авторизованы!")
+            .setMessage("Пожалуйста, авторизуйтесь")
+            .setPositiveButton("Хорошо", listener)
+            .setNegativeButton("Позже", listener)
+            .create()
+
+        dialog.show()
     }
 
 }

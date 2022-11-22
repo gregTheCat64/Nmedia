@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.flow.*
 import com.example.nmedia.appError.*
 import com.example.nmedia.api.PostApi
+import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.dao.PostDao
 import com.example.nmedia.dto.*
 import com.example.nmedia.entity.PostEntity
@@ -15,7 +16,6 @@ import kotlinx.coroutines.delay
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.IOException
-
 
 
 class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
@@ -30,7 +30,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            for (i in body){
+            for (i in body) {
                 i.toShow = true
                 i.savedOnServer = true
             }
@@ -55,7 +55,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            for (i in body){
+            for (i in body) {
                 i.toShow = false
             }
             //dao.insert(body.toEntity())
@@ -87,7 +87,11 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override suspend fun saveWithAttachment(post: Post, upload: MediaUpload) {
         try {
             val file = uploadFile(upload)
-            val postWithAttachment = post.copy(attachment = Attachment(file.id, AttachmentType.IMAGE), toShow = true, savedOnServer = true)
+            val postWithAttachment = post.copy(
+                attachment = Attachment(file.id, AttachmentType.IMAGE),
+                toShow = true,
+                savedOnServer = true
+            )
             save(postWithAttachment)
         } catch (e: IOException) {
             throw NetworkError
@@ -122,14 +126,13 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.insert(PostEntity.fromDto(body))
+            dao.insert(PostEntity.fromDto(body).apply { toShow = true })
 
-        }catch (e: IOException) {
+        } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
             throw UnknownError
         }
-
     }
 
     override suspend fun dislikeById(id: Long) {
@@ -140,9 +143,9 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.insert(PostEntity.fromDto(body))
+            dao.insert(PostEntity.fromDto(body).apply { toShow = true })
 
-        }catch (e: IOException) {
+        } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
             throw UnknownError
@@ -166,4 +169,45 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         }
 
     }
+
+    override suspend fun updateUser(login: String, pass: String) {
+        try {
+            val response = PostApi.service.updateUser(login, pass)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            val body = response.body()?: throw ApiError(response.code(), response.message())
+            val id = body.id
+            val token = body.token
+            AppAuth.getInstance().setAuth(id,token)
+
+        } catch (e: IOException) {
+            throw NetworkError
+        }catch (e: Exception) {
+            println(e)
+            throw UnknownError
+
+        }
+    }
+
+    override suspend fun registerUser(login: String, pass: String, name: String) {
+        try {
+            val response = PostApi.service.registerUser(login, pass, name)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            val body = response.body()?: throw ApiError(response.code(), response.message())
+            val id = body.id
+            val token = body.token
+            AppAuth.getInstance().setAuth(id,token)
+
+        } catch (e: IOException) {
+            throw NetworkError
+        }catch (e: Exception) {
+            println(e)
+            throw UnknownError
+
+        }
+    }
+
 }

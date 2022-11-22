@@ -19,11 +19,13 @@ package="com.example.nmedia">
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/Theme.Nmedia"
+    android:name=".application.App"
     android:usesCleartextTraffic="${usesCleartextTraffic}">
 
 
     <activity
         android:name=".activities.AppActivity"
+        android:windowSoftInputMode="adjustNothing"
         android:exported="true">
         <nav-graph android:value="@navigation/nav_main" />
 
