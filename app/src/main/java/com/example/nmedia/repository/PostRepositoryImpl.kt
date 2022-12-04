@@ -3,14 +3,13 @@ package com.example.nmedia.repository
 import androidx.lifecycle.*
 import kotlinx.coroutines.flow.*
 import com.example.nmedia.appError.*
-import com.example.nmedia.api.PostApi
+import com.example.nmedia.api.Api
 import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.dao.PostDao
 import com.example.nmedia.dto.*
 import com.example.nmedia.entity.PostEntity
 import com.example.nmedia.entity.toDto
 import com.example.nmedia.entity.toEntity
-import com.example.nmedia.model.PhotoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import okhttp3.MultipartBody
@@ -25,7 +24,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun getAll() {
         try {
-            val response = PostApi.service.getAll()
+            val response = Api.service.getAll()
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -49,7 +48,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override fun getNewerCount(id: Long): Flow<Int> = flow {
         while (true) {
             delay(10_000L)
-            val response = PostApi.service.getNewer(id)
+            val response = Api.service.getNewer(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -68,7 +67,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun save(post: Post) {
         try {
-            val response = PostApi.service.save(post)
+            val response = Api.service.save(post)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -107,7 +106,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                 upload.file.name,
                 upload.file.asRequestBody()
             )
-            val response = PostApi.service.uploadPic(part)
+            val response = Api.service.uploadPic(part)
             return response.body() ?: throw ApiError(response.code(), response.message())
 
         } catch (e: IOException) {
@@ -121,7 +120,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override suspend fun likeById(id: Long) {
         dao.likeById(id)
         try {
-            val response = PostApi.service.likeById(id)
+            val response = Api.service.likeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -138,7 +137,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override suspend fun dislikeById(id: Long) {
         dao.likeById(id)
         try {
-            val response = PostApi.service.dislikeById(id)
+            val response = Api.service.dislikeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -157,7 +156,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override suspend fun removeById(id: Long) {
         dao.removeById(id)
         try {
-            val response = PostApi.service.removeById(id)
+            val response = Api.service.removeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -172,7 +171,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun updateUser(login: String, pass: String) {
         try {
-            val response = PostApi.service.updateUser(login, pass)
+            val response = Api.service.updateUser(login, pass)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -192,7 +191,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun registerUser(login: String, pass: String, name: String) {
         try {
-            val response = PostApi.service.registerUser(login, pass, name)
+            val response = Api.service.registerUser(login, pass, name)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }

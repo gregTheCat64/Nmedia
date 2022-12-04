@@ -4,17 +4,16 @@ import com.example.nmedia.BuildConfig
 import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.dto.Media
 import com.example.nmedia.dto.Post
+import com.example.nmedia.dto.PushToken
 import com.example.nmedia.dto.Token
 import okhttp3.Interceptor
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = BuildConfig.BASE_URL
 
@@ -46,7 +45,10 @@ private val retrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())
     .build()
 
-interface PostApiService {
+interface ApiService {
+    @POST("users/push-tokens")
+    suspend fun sendPushToken(@Body token: PushToken): Response<Unit>
+
     @GET("posts")
     suspend fun getAll(): Response<List<Post>>
 
@@ -82,6 +84,6 @@ interface PostApiService {
 }
 
 
-object PostApi {
-    val service: PostApiService by lazy{ retrofit.create(PostApiService::class.java)}
+object Api {
+    val service: ApiService by lazy{ retrofit.create(ApiService::class.java)}
 }
