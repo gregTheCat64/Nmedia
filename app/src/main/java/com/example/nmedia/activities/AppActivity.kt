@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.MenuProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.nmedia.R
 import com.example.nmedia.activities.NewPostFragment.Companion.textArg
 import com.example.nmedia.auth.AppAuth
@@ -20,8 +19,23 @@ import com.example.nmedia.viewmodel.AuthViewModel
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.messaging.FirebaseMessaging
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
+
+    @Inject
+    lateinit var appAuth: AppAuth
+
+    @Inject
+    lateinit var firebaseMessaging: FirebaseMessaging
+
+    @Inject
+    lateinit var googleApiAvailability: GoogleApiAvailability
+
+    val viewModel: AuthViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,7 +61,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
         checkGoogleApiAvailability()
 
-        val viewModel by viewModels<AuthViewModel>()
+
 
         var currentMenuProvider: MenuProvider? = null
         viewModel.data.observe(this) {
@@ -64,12 +78,12 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                     when (menuItem.itemId) {
                         R.id.signIn -> {
                             findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_signInFragment)
-                            //AppAuth.getInstance().setAuth(5,"x-token")
+                            appAuth.setAuth(5,"x-token")
                             true
                         }
                         R.id.signUp -> {
                             findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_registrationFragment)
-                            //AppAuth.getInstance().setAuth(5,"x-token")
+                            appAuth.setAuth(5,"x-token")
                             true
                         }
                         R.id.logout -> {
@@ -87,7 +101,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
     private fun showSignOutDialog(){
         val listener = DialogInterface.OnClickListener{ _, which->
             when(which) {
-                DialogInterface.BUTTON_POSITIVE ->  AppAuth.getInstance().removeAuth()
+                DialogInterface.BUTTON_POSITIVE -> appAuth.removeAuth()
                 DialogInterface.BUTTON_NEGATIVE -> Toast.makeText(this, "ну и ладненько...", Toast.LENGTH_SHORT).show()
             }
         }
@@ -104,7 +118,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
 
     private fun checkGoogleApiAvailability() {
-        with(GoogleApiAvailability.getInstance()) {
+        with(googleApiAvailability) {
             val code = isGooglePlayServicesAvailable(this@AppActivity)
             if (code == ConnectionResult.SUCCESS) {
                 return@with
@@ -117,7 +131,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 .show()
         }
 
-        FirebaseMessaging.getInstance().token.addOnSuccessListener {
+        firebaseMessaging.token.addOnSuccessListener {
             println(it)
         }
     }

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.nmedia.R
@@ -20,9 +21,17 @@ import com.example.nmedia.databinding.FragmentFeedBinding
 import com.example.nmedia.dto.Post
 import com.example.nmedia.viewmodel.PostViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FeedFragment : Fragment() {
-    private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val viewModel: PostViewModel by activityViewModels()
+
+    @Inject
+    lateinit var appAuth: AppAuth
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +45,7 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLike(post: Post) {
-                if (AppAuth.getInstance().data.value != null) {
+                if (appAuth.authStateFlow.value.id != 0L) {
                     if (post.likedByMe) {
                         viewModel.dislikeById(post.id)
                     } else {
@@ -63,7 +72,8 @@ class FeedFragment : Fragment() {
             }
 
             override fun onImage(post: Post) {
-                val action = FeedFragmentDirections.actionFeedFragmentToImageFragment(post.attachment?.url.toString())
+                val action =
+                    FeedFragmentDirections.actionFeedFragmentToImageFragment(post.attachment?.url.toString())
                 findNavController().navigate(action)
             }
         })
@@ -93,7 +103,7 @@ class FeedFragment : Fragment() {
 
         viewModel.newerCount.observe(viewLifecycleOwner) { state ->
 
-            if (state != 0){
+            if (state != 0) {
                 val btnText = "Новая запись ($state)"
                 binding.newerPostsBtn.text = btnText
                 binding.newerPostsBtn.visibility = View.VISIBLE
@@ -114,7 +124,7 @@ class FeedFragment : Fragment() {
         }
 
         binding.createBtn.setOnClickListener {
-            if (AppAuth.getInstance().data.value != null) {
+            if (appAuth.authStateFlow.value.token != null) {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
             } else showSignInDialog()
         }
@@ -127,12 +137,16 @@ class FeedFragment : Fragment() {
         return binding.root
     }
 
-    private fun showSignInDialog(){
-        val listener = DialogInterface.OnClickListener{_, which->
-        when(which) {
-            DialogInterface.BUTTON_POSITIVE -> findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
-            DialogInterface.BUTTON_NEGATIVE -> Toast.makeText(context, "Не забудьте авторизоваться", Toast.LENGTH_SHORT).show()
-        }
+    private fun showSignInDialog() {
+        val listener = DialogInterface.OnClickListener { _, which ->
+            when (which) {
+                DialogInterface.BUTTON_POSITIVE -> findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
+                DialogInterface.BUTTON_NEGATIVE -> Toast.makeText(
+                    context,
+                    "Не забудьте авторизоваться",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
         val dialog = AlertDialog.Builder(context)
             .setCancelable(false)
