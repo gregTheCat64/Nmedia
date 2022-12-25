@@ -16,6 +16,7 @@ import com.example.nmedia.R
 import com.example.nmedia.activities.NewPostFragment.Companion.textArg
 import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.viewmodel.AuthViewModel
+import com.example.nmedia.viewmodel.PostViewModel
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.messaging.FirebaseMessaging
@@ -35,6 +36,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
     lateinit var googleApiAvailability: GoogleApiAvailability
 
     val viewModel: AuthViewModel by viewModels()
+
+    private val postViewModel: PostViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +63,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         }
 
         checkGoogleApiAvailability()
-
 
 
         var currentMenuProvider: MenuProvider? = null

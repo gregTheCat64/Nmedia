@@ -1,6 +1,8 @@
 package com.example.nmedia.repository
 
-import androidx.lifecycle.*
+
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import kotlinx.coroutines.flow.*
 import com.example.nmedia.appError.*
 import com.example.nmedia.api.ApiService
@@ -8,7 +10,6 @@ import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.dao.PostDao
 import com.example.nmedia.dto.*
 import com.example.nmedia.entity.PostEntity
-import com.example.nmedia.entity.toDto
 import com.example.nmedia.entity.toEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -23,9 +24,14 @@ class PostRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val appAuth: AppAuth
     ) : PostRepository {
-    override val data = dao.getAll()
-        .map(List<PostEntity>::toDto)
-        .flowOn(Dispatchers.Default)
+    override val data = Pager(
+        config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+        pagingSourceFactory = {
+            PostPagingSource(
+                apiService
+            )
+        }
+    ).flow
 
     override suspend fun getAll() {
         try {
