@@ -1,11 +1,14 @@
 package com.example.nmedia.activities
 
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -50,7 +53,7 @@ class FeedFragment : Fragment() {
                         viewModel.likeById(post.id)
                     }
                 } else
-                    //showSignInDialog()
+                    showSignInDialog()
                     println("noSign")
 
             }
@@ -85,7 +88,7 @@ class FeedFragment : Fragment() {
                 adapter.submitData(it)
             }
         }
-
+//
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.collectLatest {
                 binding.swiprefresh.isRefreshing =
@@ -118,7 +121,6 @@ class FeedFragment : Fragment() {
 //        }
 
 //        viewModel.newerCount.observe(viewLifecycleOwner) { state ->
-//
 //            if (state != 0) {
 //                val btnText = "Новая запись ($state)"
 //                binding.newerPostsBtn.text = btnText
@@ -139,41 +141,41 @@ class FeedFragment : Fragment() {
 //            viewModel.loadPosts()
 //        }
 //
-//        binding.createBtn.setOnClickListener {
-//            if (appAuth.authStateFlow.value.token != null) {
-//                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-//            } else showSignInDialog()
-//        }
-//
-//        binding.swiprefresh.setOnRefreshListener {
-//            viewModel.refresh()
-//        }
+        binding.createBtn.setOnClickListener {
+            if (appAuth.authStateFlow.value.token != null) {
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            } else showSignInDialog()
+        }
+
+        binding.swiprefresh.setOnRefreshListener {
+            adapter.refresh()
+        }
 //
 //
         return binding.root
     }
 //
-//    private fun showSignInDialog() {
-//        val listener = DialogInterface.OnClickListener { _, which ->
-//            when (which) {
-//                DialogInterface.BUTTON_POSITIVE -> findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
-//                DialogInterface.BUTTON_NEGATIVE -> Toast.makeText(
-//                    context,
-//                    "Не забудьте авторизоваться",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//        }
-//        val dialog = AlertDialog.Builder(context)
-//            .setCancelable(false)
-//            .setTitle("Вы не авторизованы!")
-//            .setMessage("Пожалуйста, авторизуйтесь")
-//            .setPositiveButton("Хорошо", listener)
-//            .setNegativeButton("Позже", listener)
-//            .create()
-//
-//        dialog.show()
-//    }
+    private fun showSignInDialog() {
+        val listener = DialogInterface.OnClickListener { _, which ->
+            when (which) {
+                DialogInterface.BUTTON_POSITIVE -> findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
+                DialogInterface.BUTTON_NEGATIVE -> Toast.makeText(
+                    context,
+                    "Не забудьте авторизоваться",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        val dialog = AlertDialog.Builder(context)
+            .setCancelable(false)
+            .setTitle("Вы не авторизованы!")
+            .setMessage("Пожалуйста, авторизуйтесь")
+            .setPositiveButton("Хорошо", listener)
+            .setNegativeButton("Позже", listener)
+            .create()
+
+        dialog.show()
+    }
 
 }
 

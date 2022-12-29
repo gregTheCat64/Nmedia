@@ -90,6 +90,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                         }
                         R.id.logout -> {
                             showSignOutDialog()
+                            postViewModel.refresh()
                             true
                         }
                         else -> false
