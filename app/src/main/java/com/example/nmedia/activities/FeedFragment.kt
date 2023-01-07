@@ -52,9 +52,10 @@ class FeedFragment : Fragment() {
                     } else {
                         viewModel.likeById(post.id)
                     }
-                } else
+                } else {
                     showSignInDialog()
                     println("noSign")
+                }
 
             }
 
@@ -90,11 +91,11 @@ class FeedFragment : Fragment() {
         }
 //
         lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow.collectLatest {
+            adapter.loadStateFlow.collectLatest { state ->
                 binding.swiprefresh.isRefreshing =
-                it.refresh is LoadState.Loading
-                        || it.append is LoadState.Loading
-                        || it.prepend is LoadState.Loading
+                    state.refresh is LoadState.Loading
+                        || state.append is LoadState.Loading
+                        || state.prepend is LoadState.Loading
             }
         }
 //        viewModel.data.observe(viewLifecycleOwner) { state ->

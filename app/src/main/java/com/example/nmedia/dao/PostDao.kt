@@ -1,5 +1,6 @@
 package com.example.nmedia.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -9,14 +10,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PostDao {
-    @Query("SELECT * FROM PostEntity WHERE toShow = 1 ORDER BY id DESC")
+    @Query("SELECT * FROM PostEntity ORDER BY id DESC")
     fun getAll(): Flow<List<PostEntity>>
+
+    @Query("SELECT * FROM PostEntity ORDER BY id DESC")
+    fun pagingSource(): PagingSource<Int, PostEntity>
 
     @Query("SELECT COUNT(*) == 0 FROM PostEntity")
     suspend fun isEmpty(): Boolean
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(post: PostEntity):Long
+    suspend fun insert(post: PostEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(posts: List<PostEntity>)
@@ -24,11 +28,11 @@ interface PostDao {
     @Query("UPDATE PostEntity SET content = :content WHERE id = :id")
     suspend fun updateContentById(id: Long, content: String)
 
-    @Query("UPDATE PostEntity SET toShow = 1")
-    suspend fun updateShownStatus()
+//    @Query("UPDATE PostEntity SET toShow = 1")
+//    suspend fun updateShownStatus()
 
-    suspend fun save(post: PostEntity) =
-        if (post.id == 0L) insert(post) else updateContentById(post.id, post.content)
+//    suspend fun save(post: PostEntity) =
+//        if (post.id == 0L) insert(post) else updateContentById(post.id, post.content)
 
     @Query("""
         UPDATE PostEntity SET
@@ -41,5 +45,7 @@ interface PostDao {
     @Query("DELETE FROM PostEntity WHERE id = :id")
     suspend fun removeById(id: Long)
 
+    @Query("DELETE FROM PostEntity")
+    suspend fun clear()
 
 }

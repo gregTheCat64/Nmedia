@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.nmedia.R
@@ -23,9 +24,7 @@ class NewPostFragment : Fragment() {
         var Bundle.textArg: String? by StringArg
     }
 
-    private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
-    )
+    private val viewModel: PostViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -68,7 +67,7 @@ class NewPostFragment : Fragment() {
                 }
                 else -> {
                     val uri = it.data?.data ?: return@registerForActivityResult
-                    viewModel.changePhoto(uri, uri.toFile())
+                    viewModel.changePhoto(uri)
                 }
             }
         }
@@ -103,7 +102,7 @@ class NewPostFragment : Fragment() {
         }
 
         binding.deletePic.setOnClickListener {
-            viewModel.changePhoto(null, null)
+            viewModel.changePhoto(null)
         }
 
         arguments?.textArg

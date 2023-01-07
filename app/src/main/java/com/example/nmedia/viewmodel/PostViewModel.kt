@@ -1,8 +1,10 @@
 package com.example.nmedia.viewmodel
 
 import android.net.Uri
+import androidx.core.net.toFile
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.dto.MediaUpload
@@ -29,7 +31,6 @@ private val empty = Post(
     likedByMe = false,
     likes = 0,
     published = "",
-    toShow = false,
     attachment = null,
     savedOnServer = false
 )
@@ -42,16 +43,19 @@ class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     appAuth: AppAuth
 ) : ViewModel() {
+    private val cached = repository
+        .data
+        .cachedIn(viewModelScope)
 
     val data: Flow<PagingData<Post>> = appAuth.authStateFlow
     .flatMapLatest { (id, _) ->
-        repository.data
-            .map {posts->
-                posts.map {
+        cached
+            .map {pagingData->
+                pagingData.map {
                    it.copy(ownedByMe = it.authorId == id)
                 }
             }
-    }.flowOn(Dispatchers.Default)
+    }
 
     private val _dataState = MutableLiveData<FeedModelState>(FeedModelState(idle = true))
     val dataState: LiveData<FeedModelState>
@@ -76,11 +80,11 @@ class PostViewModel @Inject constructor(
         loadPosts()
     }
 
-    fun loadPosts() = viewModelScope.launch {
-        _dataState.value = FeedModelState(loading = true)
+    private fun loadPosts() = viewModelScope.launch {
         try {
-            repository.getAll()
-            _dataState.value = FeedModelState(idle = true)
+            _dataState.value = FeedModelState(loading = true)
+            //repository.getAll()
+            _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
         }
@@ -89,8 +93,8 @@ class PostViewModel @Inject constructor(
     fun refresh() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true)
-            repository.getAll()
-            _dataState.value = FeedModelState(idle = true)
+           // repository.getAll()
+            _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
         }
@@ -98,20 +102,16 @@ class PostViewModel @Inject constructor(
 
 
     fun save() {
-
         edited.value?.let {
-            _postCreated.value = Unit
             viewModelScope.launch {
                 try {
-                    when (_photo.value) {
-                        noPhoto -> repository.save(it)
-                        else -> _photo.value?.file?.let { file ->
-                            repository.saveWithAttachment(it, MediaUpload(file))
-                        }
-                    }
-                    _dataState.value = FeedModelState()
+                    repository.save(
+                        it, _photo.value?.uri?.let { MediaUpload(it.toFile()) }
+                    )
+
+                    _postCreated.value = Unit
                 } catch (e: Exception) {
-                    _dataState.value = FeedModelState(error = true)
+                    e.printStackTrace()
                 }
             }
         }
@@ -131,6 +131,10 @@ class PostViewModel @Inject constructor(
             return
         }
         edited.value = edited.value?.copy(content = text)
+    }
+
+    fun changePhoto(uri: Uri?) {
+        _photo.value = PhotoModel(uri)
     }
 
     fun likeById(id: Long) {
@@ -156,11 +160,11 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun updateShownStatus() {
-        viewModelScope.launch {
-            repository.updateShownStatus()
-        }
-    }
+//    fun updateShownStatus() {
+//        viewModelScope.launch {
+//            repository.updateShownStatus()
+//        }
+//    }
 
 
     fun removeById(id: Long) {
@@ -174,11 +178,4 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun changePhoto(uri: Uri?, file: File?) {
-        _photo.value = if (uri != null && file != null) {
-            PhotoModel(uri, file)
-        } else {
-            null
-        }
-    }
 }

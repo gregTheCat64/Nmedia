@@ -61,6 +61,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_ver"
     implementation "androidx.room:room-ktx:$room_ver"
     kapt "androidx.room:room-compiler:$room_ver"
+    implementation "androidx.room:room-paging:$room_ver"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     implementation platform('com.google.firebase:firebase-bom:30.3.2')

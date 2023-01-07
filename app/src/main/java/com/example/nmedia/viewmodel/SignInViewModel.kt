@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.nmedia.api.ApiService
 import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.dao.PostDao
+import com.example.nmedia.dao.PostRemoteKeyDao
 import com.example.nmedia.db.AppDb
 import com.example.nmedia.repository.PostRepository
 import com.example.nmedia.repository.PostRepositoryImpl
@@ -20,10 +21,12 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     postDao: PostDao,
     apiService: ApiService,
-    appAuth: AppAuth
+    appAuth: AppAuth,
+    postRemoteKeyDao: PostRemoteKeyDao,
+    appDb: AppDb
 ) : ViewModel() {
     private val repository: PostRepository =
-        PostRepositoryImpl(postDao,apiService,appAuth)
+        PostRepositoryImpl(postDao,apiService,appAuth,postRemoteKeyDao, appDb)
 
     private val _tokenReceived = SingleLiveEvent<Int>()
     val tokenReceived: LiveData<Int>

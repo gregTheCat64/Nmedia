@@ -9,7 +9,6 @@ data class Post(
     val published: String,
     val likedByMe: Boolean,
     val likes: Int = 0,
-    var toShow: Boolean,
     var attachment: Attachment? = null,
     var savedOnServer: Boolean = false,
     val ownedByMe: Boolean = false

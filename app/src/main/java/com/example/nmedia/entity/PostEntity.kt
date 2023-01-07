@@ -17,7 +17,6 @@ data class PostEntity(
     val published: String,
     val likedByMe: Boolean,
     val likes: Int = 0,
-    var toShow:Boolean,
     val savedOnServer: Boolean,
 
     @Embedded
@@ -25,11 +24,11 @@ data class PostEntity(
 
 
 ) {
-    fun toDto() = Post(id, author, authorId, authorAvatar, content, published, likedByMe, likes, toShow, attachment, savedOnServer)
+    fun toDto() = Post(id, author, authorId, authorAvatar, content, published, likedByMe, likes,  attachment, savedOnServer)
 
     companion object {
         fun fromDto(dto: Post) =
-            PostEntity(dto.id, dto.author,dto.authorId, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes, dto.toShow,dto.savedOnServer, dto.attachment, )
+            PostEntity(dto.id, dto.author,dto.authorId, dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes, dto.savedOnServer, dto.attachment, )
 
     }
 }

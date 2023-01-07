@@ -1,13 +1,17 @@
 package com.example.nmedia.repository
 
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.map
 import kotlinx.coroutines.flow.*
 import com.example.nmedia.appError.*
 import com.example.nmedia.api.ApiService
 import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.dao.PostDao
+import com.example.nmedia.dao.PostRemoteKeyDao
+import com.example.nmedia.db.AppDb
 import com.example.nmedia.dto.*
 import com.example.nmedia.entity.PostEntity
 import com.example.nmedia.entity.toEntity
@@ -22,16 +26,19 @@ import javax.inject.Inject
 class PostRepositoryImpl @Inject constructor(
     private val dao: PostDao,
     private val apiService: ApiService,
-    private val appAuth: AppAuth
+    private val appAuth: AppAuth,
+    postRemoteKeyDao: PostRemoteKeyDao,
+    appDb: AppDb
     ) : PostRepository {
+    @OptIn(ExperimentalPagingApi::class)
     override val data = Pager(
-        config = PagingConfig(pageSize = 10, enablePlaceholders = false),
-        pagingSourceFactory = {
-            PostPagingSource(
-                apiService
-            )
-        }
+        config = PagingConfig(pageSize = 5, enablePlaceholders = false),
+        pagingSourceFactory = {dao.pagingSource()},
+        remoteMediator = PostRemoteMediator(apiService, dao, postRemoteKeyDao, appDb)
     ).flow
+        .map { pagingData ->
+            pagingData.map { postEntity ->
+            postEntity.toDto() } }
 
     override suspend fun getAll() {
         try {
@@ -41,7 +48,6 @@ class PostRepositoryImpl @Inject constructor(
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             for (i in body) {
-                i.toShow = true
                 i.savedOnServer = true
             }
             dao.insert(body.toEntity())
@@ -52,23 +58,23 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateShownStatus() {
-        dao.updateShownStatus()
-    }
+//    override suspend fun updateShownStatus() {
+//        dao.updateShownStatus()
+//    }
 
     override fun getNewerCount(id: Long): Flow<Int> = flow {
         while (true) {
-            delay(10_000L)
+            delay(50_000L)
             val response = apiService.getNewer(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
 
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            for (i in body) {
-                i.toShow = false
-            }
-            //dao.insert(body.toEntity())
+//            for (i in body) {
+//                i.toShow = false
+//            }
+            dao.insert(body.toEntity())
             emit(body.size)
         }
     }
@@ -76,14 +82,21 @@ class PostRepositoryImpl @Inject constructor(
         .flowOn(Dispatchers.Default)
 
 
-    override suspend fun save(post: Post) {
+    override suspend fun save(post: Post, upload: MediaUpload?) {
         try {
-            val response = apiService.save(post)
+            val postWithAttachment = upload?.let {
+                upload(it)
+            }?.let {
+                post.copy(
+                    attachment = Attachment(it.id, AttachmentType.IMAGE),
+                    savedOnServer = true
+                )
+            }
+            val response = apiService.save(postWithAttachment ?: post)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            body.toShow = true
             body.savedOnServer = true
             dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
@@ -91,26 +104,24 @@ class PostRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             throw UnknownError
         }
-
     }
 
-    override suspend fun saveWithAttachment(post: Post, upload: MediaUpload) {
-        try {
-            val file = uploadFile(upload)
-            val postWithAttachment = post.copy(
-                attachment = Attachment(file.id, AttachmentType.IMAGE),
-                toShow = true,
-                savedOnServer = true
-            )
-            save(postWithAttachment)
-        } catch (e: IOException) {
-            throw NetworkError
-        } catch (e: Exception) {
-            throw UnknownError
-        }
-    }
-
-    private suspend fun uploadFile(upload: MediaUpload): Media {
+    //    override suspend fun saveWithAttachment(post: Post, upload: MediaUpload) {
+//        try {
+//            val file = uploadFile(upload)
+//            val postWithAttachment = post.copy(
+//                attachment = Attachment(file.id, AttachmentType.IMAGE),
+//                toShow = true,
+//                savedOnServer = true
+//            )
+//            save(postWithAttachment)
+//        } catch (e: IOException) {
+//            throw NetworkError
+//        } catch (e: Exception) {
+//            throw UnknownError
+//        }
+//    }
+    override suspend fun upload(upload: MediaUpload): Media {
         try {
             val part = MultipartBody.Part.createFormData(
                 "file",
@@ -136,8 +147,8 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.insert(PostEntity.fromDto(body).apply { toShow = true })
-
+           // dao.insert(PostEntity.fromDto(body).apply { toShow = true })
+            dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -153,16 +164,14 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.insert(PostEntity.fromDto(body).apply { toShow = true })
+            dao.insert(PostEntity.fromDto(body))
 
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
             throw UnknownError
         }
-
     }
-
 
     override suspend fun removeById(id: Long) {
         dao.removeById(id)

@@ -21,7 +21,7 @@ interface OnInteractionListener {
     fun onImage(post: Post) {}
 }
 
-val BASE_URL = "http://10.0.2.2:9999"
+const val BASE_URL = "http://10.0.2.2:9999"
 
 class PostAdapter(
     private val onInteractionListener: OnInteractionListener,
@@ -49,16 +49,16 @@ class PostViewHolder(
             binding.attachImage.visibility = View.VISIBLE
             getAttachment(post,binding)
         } else binding.attachImage.visibility = View.GONE
-        if (!post.savedOnServer){
-            binding.like.visibility = View.INVISIBLE
-            binding.share.visibility = View.INVISIBLE
-        } else {
-            binding.like.visibility = View.VISIBLE
-            binding.share.visibility = View.VISIBLE
-        }
-        if (post.savedOnServer){
-            binding.savedOnServer.setImageResource(R.drawable.ic_baseline_public_24)
-        } else binding.savedOnServer.setImageResource(R.drawable.ic_baseline_public_off_24)
+//        if (!post.savedOnServer){
+//            binding.like.visibility = View.INVISIBLE
+//            binding.share.visibility = View.INVISIBLE
+//        } else {
+//            binding.like.visibility = View.VISIBLE
+//            binding.share.visibility = View.VISIBLE
+//        }
+//        if (post.savedOnServer){
+//            binding.savedOnServer.setImageResource(R.drawable.ic_baseline_public_24)
+//        } else binding.savedOnServer.setImageResource(R.drawable.ic_baseline_public_off_24)
 
         binding.apply {
             author.text = post.author
