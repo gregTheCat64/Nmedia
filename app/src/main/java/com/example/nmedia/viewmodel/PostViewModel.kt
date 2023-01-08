@@ -52,7 +52,7 @@ class PostViewModel @Inject constructor(
         cached
             .map {pagingData->
                 pagingData.map {
-                   it.copy(ownedByMe = it.authorId == id)
+                   it.copy()
                 }
             }
     }
