@@ -52,15 +52,9 @@ class PostRemoteMediator (
                     LoadType.REFRESH -> {
                         if (postDao.isEmpty()){
                             postRemoteKeyDao.insert(
-                                listOf(
-                                    PostRemoteKeyEntity(
-                                        PostRemoteKeyEntity.KeyType.AFTER,
-                                        body.first().id
-                                    ),
-                                    PostRemoteKeyEntity(
-                                        PostRemoteKeyEntity.KeyType.BEFORE,
-                                        body.last().id
-                                    )
+                                PostRemoteKeyEntity(
+                                    PostRemoteKeyEntity.KeyType.BEFORE,
+                                    body.last().id
                                 )
                             )
                         } else {
@@ -86,6 +80,7 @@ class PostRemoteMediator (
                     }
                     else -> Unit
                 }
+
                 body.map {
                     it.savedOnServer = true
                 }

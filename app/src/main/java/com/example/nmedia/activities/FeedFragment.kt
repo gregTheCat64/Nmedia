@@ -16,9 +16,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.nmedia.R
 import com.example.nmedia.adapter.OnInteractionListener
 import com.example.nmedia.adapter.PostAdapter
+import com.example.nmedia.adapter.PostLoadingStateAdapter
 import com.example.nmedia.auth.AppAuth
 import com.example.nmedia.databinding.FragmentFeedBinding
 import com.example.nmedia.dto.Post
@@ -82,7 +84,17 @@ class FeedFragment : Fragment() {
             }
         })
 
-        binding.list.adapter = adapter
+        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = PostLoadingStateAdapter{
+                adapter.retry()},
+            footer = PostLoadingStateAdapter{
+                adapter.retry()
+            }
+        )
+
+        binding.list.addItemDecoration(
+            DividerItemDecoration(binding.list.context, DividerItemDecoration.VERTICAL)
+        )
 
         lifecycleScope.launchWhenCreated {
             viewModel.data.collectLatest {
@@ -94,8 +106,8 @@ class FeedFragment : Fragment() {
             adapter.loadStateFlow.collectLatest { state ->
                 binding.swiprefresh.isRefreshing =
                     state.refresh is LoadState.Loading
-                        || state.append is LoadState.Loading
-                        || state.prepend is LoadState.Loading
+//                        || state.append is LoadState.Loading
+//                        || state.prepend is LoadState.Loading
             }
         }
 //        viewModel.data.observe(viewLifecycleOwner) { state ->

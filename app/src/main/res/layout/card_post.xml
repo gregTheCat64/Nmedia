@@ -55,7 +55,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/menu"
-        style="@style/Widget.AppTheme.SettingsButton"
+        style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/common_spacing"
@@ -142,7 +142,6 @@
         android:layout_height="wrap_content"
         android:checkable="true"
         android:contentDescription="@string/description_post_like"
-
         android:textColor="@color/simple_elements_tint"
         app:icon="@drawable/ic_like_24dp"
         app:layout_constraintStart_toStartOf="parent"

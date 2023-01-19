@@ -1,13 +1,14 @@
 package com.example.nmedia.repository
 
 import androidx.paging.PagingData
+import com.example.nmedia.dto.FeedItem
 import com.example.nmedia.dto.Media
 import com.example.nmedia.dto.MediaUpload
 import com.example.nmedia.dto.Post
 import kotlinx.coroutines.flow.Flow
 
 interface PostRepository {
-    val data : Flow<PagingData<Post>>
+    val data : Flow<PagingData<FeedItem>>
     suspend fun getAll()
     fun getNewerCount(id: Long): Flow<Int>
     suspend fun save(post: Post, upload: MediaUpload?)

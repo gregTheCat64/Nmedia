@@ -1,10 +1,7 @@
 package com.example.nmedia.repository
 
 
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.map
+import androidx.paging.*
 import kotlinx.coroutines.flow.*
 import com.example.nmedia.appError.*
 import com.example.nmedia.api.ApiService
@@ -21,8 +18,10 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.random.Random
 
-
+@Singleton
 class PostRepositoryImpl @Inject constructor(
     private val dao: PostDao,
     private val apiService: ApiService,
@@ -31,14 +30,22 @@ class PostRepositoryImpl @Inject constructor(
     appDb: AppDb
     ) : PostRepository {
     @OptIn(ExperimentalPagingApi::class)
-    override val data = Pager(
+    override val data: Flow<PagingData<FeedItem>> = Pager(
         config = PagingConfig(pageSize = 5, enablePlaceholders = false),
         pagingSourceFactory = {dao.pagingSource()},
         remoteMediator = PostRemoteMediator(apiService, dao, postRemoteKeyDao, appDb)
     ).flow
         .map { pagingData ->
             pagingData.map { postEntity ->
-            postEntity.toDto() } }
+            postEntity.toDto() }
+                .insertSeparators { previous, _ ->
+                if (previous?.id?.rem(5) == 0L) {
+                    Ad(Random.nextLong(), "figma.jpg")
+                } else {
+                    null
+            }
+            } }
+    
 
     override suspend fun getAll() {
         try {
@@ -89,7 +96,7 @@ class PostRepositoryImpl @Inject constructor(
             }?.let {
                 post.copy(
                     attachment = Attachment(it.id, AttachmentType.IMAGE),
-                    savedOnServer = true
+                    savedOnServer = false
                 )
             }
             val response = apiService.save(postWithAttachment ?: post)

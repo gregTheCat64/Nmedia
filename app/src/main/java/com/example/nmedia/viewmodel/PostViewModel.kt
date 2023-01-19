@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.nmedia.auth.AppAuth
+import com.example.nmedia.dto.FeedItem
 import com.example.nmedia.dto.MediaUpload
 import com.example.nmedia.dto.Post
 import com.example.nmedia.model.FeedModelState
@@ -47,12 +48,16 @@ class PostViewModel @Inject constructor(
         .data
         .cachedIn(viewModelScope)
 
-    val data: Flow<PagingData<Post>> = appAuth.authStateFlow
+    val data: Flow<PagingData<FeedItem>> = appAuth.authStateFlow
     .flatMapLatest { (id, _) ->
         cached
             .map {pagingData->
                 pagingData.map {
-                   it.copy()
+                    if (it is Post) {
+                        it.copy(ownedByMe = it.authorId == id)
+                    } else{
+                        it
+                    }
                 }
             }
     }
@@ -105,11 +110,11 @@ class PostViewModel @Inject constructor(
         edited.value?.let {
             viewModelScope.launch {
                 try {
+                    _postCreated.value = Unit
                     repository.save(
                         it, _photo.value?.uri?.let { MediaUpload(it.toFile()) }
                     )
 
-                    _postCreated.value = Unit
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -117,8 +122,6 @@ class PostViewModel @Inject constructor(
         }
         edited.value = empty
         _photo.value = noPhoto
-
-
     }
 
     fun edit(post: Post) {
